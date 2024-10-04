@@ -220,7 +220,7 @@ cmake --build . --parallel --config=RelWithDebInfo
 
 # Same steps before the cmake invocation as above (# Common Steps cmake invocation)
 
-# Install PlatformToolset matching to the project files, currently v143
+# Install PlatformToolset matching to the project files, currently v143 for Visual Studio 2022 and v142 for Visual Studio 2019
 
 set _P=^
   /p:Platform=x64 ^
@@ -233,6 +233,7 @@ set CL=/MP
 cd /d C:\source\UltraVNC
 msbuild %_P% winvnc\winvnc.sln
 msbuild %_P% vncviewer\vncviewer.sln
+
 
 
 
@@ -285,3 +286,4 @@ Restart your computer.
 	(If Error ZLIB not find : try to update environment and see VCPKG_README.txt doesn't work for me actually. Note: same error with Visual Studio 2022)
 
 # Steps specific Qt Creator Community Edition below (In Progress)
+
