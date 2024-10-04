@@ -31,6 +31,10 @@ GPUCache/
 addon/eventMessageLogger/Debug/
 addon/eventMessageLogger/Release/
 addon/eventMessageLogger/x64/
+addon/Debug
+addon/eventMessageLogger/MSG00001.bin
+addon/ms-logon/MSLogonACL/buildtime.h
+addon/ms-logon/authSSP/buildtime.h
 
 addon/ms-logon/authSSP/Debug/
 addon/ms-logon/authSSP/Release/

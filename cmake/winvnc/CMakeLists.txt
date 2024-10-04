@@ -1,34 +1,40 @@
 
 project(winvnc LANGUAGES C CXX RC)
 
-# Patch JPEG Error for Visual Studio 2022 + Patch Error libjpeg-turbo for Visual Studio 2022
+# Patch JPEG Error for Visual Studio 2022
 set(JPEG_INCLUDE_DIR "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/include")
-set(libjpeg-turbo_DIR "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/include")						# Patch error libjpeg-turbo
 set(JPEG_LIBRARY "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/lib/jpeg.lib")
-set(libjpeg-turbo_LIBRARY "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/lib/turbojpeg.lib")		# Patch error libjpeg-turbo
-find_package(JPEG REQUIRED)
+include_directories(${JPEG_INCLUDE_DIR})
+link_directories("C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/lib")
+#find_package(JPEG REQUIRED)	#<- Disable Patch error JPEG CMake don't find
+
+# Patch Error libjpeg-turbo for Visual Studio 2022
+set(libjpeg-turbo_DIR "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/include")
+set(libjpeg-turbo_LIBRARY "C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/lib/turbojpeg.lib")
 include_directories(${libjpeg-turbo_DIR})
 link_directories("C:/source/vcpkg/packages/libjpeg-turbo_x64-windows-static/lib")
-#find_package(libjpeg-turbo CONFIG REQUIRED) # Patch error libjpeg-turbo Disable CMake don't find
+#find_package(libjpeg-turbo CONFIG REQUIRED)	#<- Disable Patch error libjpeg-turbo CMake don't find
 
 # Patch Zlib Error for Visual Studio 2022
 set(ZLIB_INCLUDE_DIR "C:/source/vcpkg/packages/zlib_x64-windows-static/include")
 set(ZLIB_LIBRARY "C:/source/vcpkg/packages/zlib_x64-windows-static/lib/zlib.lib")
-find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIR})
+link_directories("C:/source/vcpkg/packages/zlib_x64-windows-static/lib")
+#find_package(ZLIB REQUIRED)	#<- Disable Patch error Zlib CMake don't find
 
 # Patch zstd Error for Visual Studio 2022
 set(ZSTD_INCLUDE_DIR "C:/source/vcpkg/packages/zstd_x64-windows-static/include")
 set(ZSTD_LIBRARY "C:/source/vcpkg/packages/zstd_x64-windows-static/lib/zstd.lib")
 include_directories(${ZSTD_INCLUDE_DIR})
 link_directories("C:/source/vcpkg/packages/zstd_x64-windows-static/lib")
-#find_package(zstd CONFIG REQUIRED) <-Disable CMake don't find
+#find_package(zstd CONFIG REQUIRED)		#<- Disable Patch error zstd CMake don't find
 
 # Patch LibLZMA Error for Visual Studio 2022
 set(LIBLZMA_INCLUDE_DIR "C:/source/vcpkg/packages/liblzma_x64-windows-static/include")
 set(LIBLZMA_LIBRARY "C:/source/vcpkg/packages/liblzma_x64-windows-static/lib/lzma.lib")
 include_directories(${LIBLZMA_INCLUDE_DIR})
 link_directories("C:/source/vcpkg/packages/liblzma_x64-windows-static/lib")
-#find_package(LibLZMA REQUIRED)  <-Disable CMake don't find
+#find_package(LibLZMA REQUIRED)		#<- Disable Patch error LibLZMA CMake don't find
 
 set(${PROJECT_NAME}_SOURCES
     ../../DSMPlugin/DSMPlugin.cpp
@@ -124,13 +130,15 @@ target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../winvnc/winvnc/win
 set_source_files_properties(${CMAKE_SOURCE_DIR}/../winvnc/winvnc/winvnc.rc LANGUAGE RC)
 target_compile_definitions(${PROJECT_NAME} PRIVATE NDEBUG __x86__ __WIN32__ WIN32 _WINDOWS XMD_H _WINSTATIC _RDPMODE _XZ _VCPKG)
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE JPEG::JPEG
-    #PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static> # Patch Error libjpeg-turbo for Visual Studio 2022
-    PRIVATE $<IF:$<TARGET_EXISTS:${libjpeg-turbo_DIR}::turbojpeg>,${libjpeg-turbo_DIR}::turbojpeg,${libjpeg-turbo_DIR}::turbojpeg-static> # Patch Error libjpeg-turbo for Visual Studio 2022
-    PRIVATE ZLIB::ZLIB
-    #PRIVATE zstd::libzstd              # Patch zstd Error for Visual Studio 2022
-	PRIVATE ${ZSTD_LIBRARY}::libzstd    # Patch zstd Error for Visual Studio 2022
-    #PRIVATE LibLZMA::LibLZMA    			# Patch LibLZMA Error for Visual Studio 2022
+	#PRIVATE JPEG::JPEG					#<- Disable Patch JPEG error for Visual Studio 2022
+	PRIVATE ${JPEG_LIBRARY}::JPEG		# Patch JPEG error for Visual Studio 2022
+    #PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static> # <- Disable Patch Error libjpeg-turbo for Visual Studio 2022
+    PRIVATE $<IF:$<TARGET_EXISTS:${libjpeg-turbo_LIBRARY}::turbojpeg>,${libjpeg-turbo_LIBRARY}::turbojpeg,${libjpeg-turbo_LIBRARY}::turbojpeg-static> # Patch Error libjpeg-turbo for Visual Studio 2022
+    #PRIVATE ZLIB::ZLIB				# <- Disable Patch ZLIB Error for Visual Studio 2022
+	PRIVATE ${ZLIB_LIBRARY}::ZLIB	# Patch ZLIB Error for Visual Studio 2022
+    #PRIVATE zstd::libzstd              # <- Disable Patch zstd Error for Visual Studio 2022
+    PRIVATE ${ZSTD_LIBRARY}::libzstd    # Patch zstd Error for Visual Studio 2022
+	#PRIVATE LibLZMA::LibLZMA    			# <- Disable Patch LibLZMA Error for Visual Studio 2022
 	PRIVATE ${LIBLZMA_LIBRARY}::LibLZMA		# Patch LibLZMA Error for Visual Studio 2022
     libomnithread
     librdr
