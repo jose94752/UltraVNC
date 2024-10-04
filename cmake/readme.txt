@@ -63,6 +63,7 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 # Install Visual Studio Community 2022 (with MFC components to avoid errors about missing afxres.h)
 #	If you have Visual Studio Build Tools 2019 with VSC 2022 (install on it MFC components too for same reason)
 #		and install Windows SDK Version 8.1 (for Errors errors MSB8036)
+#       Don't install the vcpkg integrated package of Visual Studio 2022 it will change your VCPKG_ROOT path variable
 
 # Open git bash
 
