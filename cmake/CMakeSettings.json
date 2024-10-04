@@ -17,7 +17,7 @@
           "value": "C:\\source\\vcpkg\\installed\\x64-windows-static\\include",
           "type": "PATH"
         },
-        {git 
+        { 
           "name": "JPEG_LIBRARY_DEBUG",
           "value": "C:\\source\\vcpkg\\installed\\x64-windows-static\\debug\\lib\\jpeg.lib",
           "type": "FILEPATH"
