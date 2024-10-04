@@ -23,11 +23,6 @@ if (CMAKE_CXX_STANDARD STREQUAL 14)
 	# Patch Zlib Error for Visual Studio 2022
 	set(ZLIB_INCLUDE_DIR "C:/source/vcpkg/packages/zlib_x64-windows-static/include")
 	set(ZLIB_LIBRARY "C:/source/vcpkg/packages/zlib_x64-windows-static/lib/zlib.lib")
-	find_package(ZLIB REQUIRED)
-
-	# Patch Zlib Error for Visual Studio 2022
-	set(ZLIB_INCLUDE_DIR "C:/source/vcpkg/packages/zlib_x64-windows-static/include")
-	set(ZLIB_LIBRARY "C:/source/vcpkg/packages/zlib_x64-windows-static/lib/zlib.lib")
 	include_directories(${ZLIB_INCLUDE_DIR})
 	link_directories("C:/source/vcpkg/packages/zlib_x64-windows-static/lib")
 	#find_package(ZLIB REQUIRED)	#<- Disable Patch error Zlib CMake don't find
