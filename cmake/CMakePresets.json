@@ -1,4 +1,15 @@
-﻿{
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 30,
+    "patch": 4
+  },
+  //include with morethings.json and otherthings.json put again the delete of these one are not understood by Visual Studio 2022
+  "include": [
+    "otherThings.json",
+    "moreThings.json"
+  ], // Don't delete until others 14 errors are correcting I have create morethings.json and otherthings.json files patch errors relative errors.
   "configurePresets": [
     {
       "name": "windows-base",
@@ -12,9 +23,9 @@
         "CMAKE_CXX_COMPILER": "cl.exe"
       },
       "condition": {
-        "type": "equals",
         "lhs": "${hostSystemName}",
-        "rhs": "Windows"
+        "rhs": "Windows",
+        "type": "equals"
       }
     },
     {
@@ -26,14 +37,18 @@
         "value": "x64",
         "strategy": "external"
       },
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     },
     {
       "name": "x64-release",
       "displayName": "x64 Release",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (RelWithDebInfo)",
       "inherits": "x64-debug",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     },
     {
       "name": "x86-debug",
@@ -44,15 +59,18 @@
         "value": "x86",
         "strategy": "external"
       },
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     },
     {
       "name": "x86-release",
       "displayName": "x86 Release",
       "description": "Target Windows (32-bit) with the Visual Studio development environment. (RelWithDebInfo)",
       "inherits": "x86-debug",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     }
-  ],
-  "version": 3
+  ]
 }

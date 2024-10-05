@@ -3,7 +3,7 @@
     {
       "buildCommandArgs": "",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "cmakeCommandArgs": "-DZLIB_INCLUDE_DIR=\"C:\\source\\vcpkg\\packages\\zlib_x64-windows-static\\include\" -DZLIB_LIBRARY=\"C:\\source\\vcpkg\\packages\\zlib_x64-windows-static\\lib\\zlib.lib\"",
+      "cmakeCommandArgs": "",
       "cmakeToolchain": "%VCPKG_ROOT%\\scripts\\buildsystems\\vcpkg.cmake",
       "configurationType": "Debug",
       "ctestCommandArgs": "",

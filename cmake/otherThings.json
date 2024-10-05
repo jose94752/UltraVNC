@@ -1,0 +1,18 @@
+{
+  "firstName": "More",
+  "lastName": "Things",
+  "gender": "man",
+  "age": 47,
+  "address": {
+    "streetAddress": "88 rue du Faubourg Saint-Honoré",
+    "city": "Paris",
+    "state": "France",
+    "postalCode": "75008"
+  },
+  "phoneNumbers": [
+    {
+      "type": "work",
+      "number": "330142928100"
+    }
+  ]
+} // Don't delete until others 14 errors are correcting I have create morethings.json and otherthings.json files patch errors relative errors.
