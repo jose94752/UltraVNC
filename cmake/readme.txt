@@ -193,6 +193,7 @@ copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultr
 ######################
 
 # Windows with cmake, using LLVM compiler
+# You need to install ClangCL generation tools if you have build failed
 
 # x64 Native Tools Command Prompt for VS 2022
 
