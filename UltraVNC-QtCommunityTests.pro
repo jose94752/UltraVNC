@@ -163,8 +163,9 @@ SOURCES += \
     \uvnc_settings\uvnc_settings\vncsetauth.cpp \
     \uvnckeyboardhelper\uvnckeyboardhelper\stdafx.cpp \
     \uvnckeyboardhelper\uvnckeyboardhelper\uvnckeyboardhelper.cpp \
-    \vncviewer\AboutBoxQt.cpp \
+    \vncviewer\directx\directxviewer.cpp \
     \vncviewer\AboutBox.cpp \
+	\vncviewer\AboutBoxQt.cpp \
     \vncviewer\AccelKeys.cpp \
     \vncviewer\AuthDialog.cpp \
     \vncviewer\buildtime.cpp \
@@ -502,8 +503,9 @@ HEADERS += \
     \uvnckeyboardhelper\uvnckeyboardhelper\stdafx.h \
     \uvnckeyboardhelper\uvnckeyboardhelper\targetver.h \
     \uvnckeyboardhelper\uvnckeyboardhelper\uvnckeyboardhelper.h \
-    \vncviewer\AboutBoxQt.h \
-    \vncviewer\AboutBox.h \
+    \vncviewer\directx\directxviewer.h \
+	\vncviewer\AboutBox.h \
+	\vncviewer\AboutBoxQt.h \
     \vncviewer\AccelKeys.h \
     \vncviewer\AuthDialog.h \
     \vncviewer\ClientConnection.h \
