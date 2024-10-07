@@ -613,7 +613,6 @@ HEADERS += \
     \winvnc\winvnc\vncmenu.h \
     \winvnc\winvnc\vncOSVersion.h \
     \winvnc\winvnc\vncpasswd.h \
-    \winvnc\winvnc\vncproperties.h \
     \winvnc\winvnc\vncpropertiesPoll.h \
     \winvnc\winvnc\vncserver.h \
     \winvnc\winvnc\vncsetauth.h \
@@ -664,7 +663,7 @@ HEADERS += \
 FORMS += \
     \vncviewer\AboutBoxQt.ui \
     \vncviewer\mainwindow.ui \
-    \vncviewer\vncviewerQt.ui \
+    \vncviewer\vncviewerQt.ui
 
 TRANSLATIONS += \
     UltraVNC-QtCommunityTests_fr_FR.ts
