@@ -115,7 +115,7 @@ Change these line
 "cmakeToolchain": "%VCPKG_ROOT%\\scripts\\buildsystems\\vcpkg.cmake"
 with
 "cmakeToolchain": "C:\\source\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
-KO ne fonctionne pas.
+KO These doesn't Work at all.
 
 # See https://stackoverflow.com/questions/55496611/cmake-cannot-find-libraries-installed-with-vcpkg
 # Reinstall all vcpkg if you have install them before
@@ -168,6 +168,7 @@ cmake --build . --parallel --config=RelWithDebInfo
 ######################
 
 # Windows with cmake, using ninja build system, and address sanitizer enabled
+# You need to install ClangCL generation tools if you have build failed
 
 # x64 Native Tools Command Prompt for VS 2022
 
