@@ -109,7 +109,6 @@ set(${PROJECT_NAME}_SOURCES
     vnclog.cpp
     vncmenu.cpp
     vncntlm.cpp
-    vncpropertiesPoll.cpp
     vncserver.cpp
     vncsetauth.cpp
     vncsockconnect.cpp

@@ -291,7 +291,6 @@ SOURCES += \
     \winvnc\winvnc\vncMultiMonitor.cpp \
     \winvnc\winvnc\vncntlm.cpp \
     \winvnc\winvnc\vncOSVersion.cpp \
-    \winvnc\winvnc\vncpropertiesPoll.cpp \
     \winvnc\winvnc\vncserver.cpp \
     \winvnc\winvnc\vncsetauth.cpp \
     \winvnc\winvnc\vncsockconnect.cpp \
@@ -613,7 +612,6 @@ HEADERS += \
     \winvnc\winvnc\vncmenu.h \
     \winvnc\winvnc\vncOSVersion.h \
     \winvnc\winvnc\vncpasswd.h \
-    \winvnc\winvnc\vncpropertiesPoll.h \
     \winvnc\winvnc\vncserver.h \
     \winvnc\winvnc\vncsetauth.h \
     \winvnc\winvnc\vncsockconnect.h \
