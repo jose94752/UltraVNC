@@ -27,6 +27,13 @@ if (CMAKE_CXX_STANDARD STREQUAL 14)
 	#link_directories("C:/source/vcpkg/packages/zlib_x64-windows-static/lib")
 	find_package(ZLIB REQUIRED)	#<- Disable Patch error Zlib CMake don't find
 	
+	# Patch zstd Error for Visual Studio 2022
+	#set(ZSTD_INCLUDE_DIR "C:/source/vcpkg/packages/zstd_x64-windows-static/include")
+	#set(ZSTD_LIBRARY "C:/source/vcpkg/packages/zstd_x64-windows-static/lib/zstd.lib")
+	#include_directories(${ZSTD_INCLUDE_DIR})
+	#link_directories("C:/source/vcpkg/packages/zstd_x64-windows-static/lib")
+	find_package(zstd CONFIG REQUIRED)		#<- Disable Patch error zstd CMake don't find
+	
 	# Patch LibLZMA Error for Visual Studio 2022
 	#set(LIBLZMA_INCLUDE_DIR "C:/source/vcpkg/packages/liblzma_x64-windows-static/include")
 	#set(LIBLZMA_LIBRARY "C:/source/vcpkg/packages/liblzma_x64-windows-static/lib/lzma.lib")
