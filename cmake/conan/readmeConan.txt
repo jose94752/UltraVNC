@@ -54,7 +54,7 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 
 
 
-######################  Upgraded for Conan Windows Visual Studio Users
+######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, generate Visual Studio project files
 
@@ -73,12 +73,31 @@ pip install conan
 conan --version
 pip show conan
 
+# Go to the directory /cmake/conan (Windows adapt for Linux and others)
+cd /c/source/UltraVNC/cmake/conan/
+
+# First create the Conan default profile (if you just install Conan and you have not set these one)
+# Creating the Conan default profile
+conan profile detect
+# More information here https://docs.conan.io/2/reference/config_files/profiles.html
+# Save the informations of the command on text file you can retrieve easily if you need it.
+
 # Create Conan Build Profile for x64-windows-static
-conan profile new x64-windows-static --detect
+conan profile detect --name x64-windows-static
+
+# Conan v1 commands (we can't use them they are no logger support on Conan version 2!)
 conan profile update settings.arch=x86_64 x64-windows-static
 conan profile update settings.os=Windows x64-windows-static
-conan profile update settings.compiler.runtime=MT x64-windows-static  # For a static library
+conan profile update settings.compiler.runtime=MT x64-windows-static  # For a static library Old V1
 conan profile update options.*:shared=False x64-windows-static  # Ensures static libraries
+# See that https://github.com/conan-io/conan/issues/13205
+# You must edit and modify the Conan profile x64-windows-static with you favorite text editor
+# Note for the following values are not allowed on Conan V2
+# Compiler MT you must use 'static' or 'dynamic' -> compiler.runtime=static
+# For replace the "conan profile update options.*:shared=False" adding these 3 lines below to the x64-windows-static profile.
+[options]
+shared=False
+[conf]
 
 # See the conanfile.txt files need it for install of these libraries
 libjpeg-turbo
@@ -89,7 +108,7 @@ zlib
 zstd
 
 # Call the install of libraries from conanfile.txt files with the profile x64-windows-static
-conan install . --profile x64-windows-static
+conan install . -pr x64-windows-static
 
 # Run Conan to install the dependencies
 conan install . --build=missing
@@ -99,17 +118,20 @@ cd /d c:\source
 git clone https://github.com/ultravnc/UltraVNC.git
 
 mkdir obj && cd obj
-cmake ^
-    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
-    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
-    ..\UltraVNC\cmake
+# Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
+#cmake ^
+#    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+#    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
+#    ..\UltraVNC\cmake
+# Actual with Conan Not functional
+cmake .. "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" ..\UltraVNC\cmake
 set CL=/MP
 cmake --build . --parallel --config=RelWithDebInfo
 
 
 
 
-######################  Upgraded for Conan Windows Visual Studio Users no changes here
+######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, using ninja build system, and address santitizer enabled
 
@@ -119,12 +141,15 @@ cmake --build . --parallel --config=RelWithDebInfo
 
 cd /d c:\source
 mkdir obj_ninja && cd obj_ninja
-cmake ^
-    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
-    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
-    -G Ninja ^
-    -Dasan=TRUE ^
-    ..\UltraVNC\cmake
+# Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
+#cmake ^
+#    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+#    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
+#    -G Ninja ^
+#    -Dasan=TRUE ^
+#    ..\UltraVNC\cmake
+# Actual with Conan
+xx-To Do-xx
 cmake --build . --parallel --config=RelWithDebInfo
 cmake --build . --target install --config=RelWithDebInfo
 copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultravnc\
@@ -133,7 +158,7 @@ copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultr
 
 
 
-######################  Upgraded for Conan Windows Visual Studio Users no changes here
+######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, using LLVM compiler
 
@@ -143,18 +168,21 @@ copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultr
 
 cd /d c:\source
 mkdir obj_ninja_llvm && cd obj_ninja_llvm
-cmake ^
-    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
-    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
-    -T ClangCL ^
-    ..\UltraVNC\cmake
+# Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
+#cmake ^
+#    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+#    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
+#    -T ClangCL ^
+#    ..\UltraVNC\cmake
+# Actual with Conan
+xx-To Do-xx
 cmake --build . --parallel --config=RelWithDebInfo
 #ninja clean
 
 
 
 
-######################  Upgraded for Conan Windows Visual Studio Users adding previous changes not from Conan
+######################  Upgrade in progress for Conan Windows Visual Studio Users adding previous changes not from Conan
 
 # Windows with regular Visual Studio project files
 
