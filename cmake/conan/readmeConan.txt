@@ -58,6 +58,8 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 
 # Windows with cmake, generate Visual Studio project files
 
+# Common Steps cmake invocation
+
 # Install git
 # Install Visual Studio Community 2022 (with MFC components to avoid errors about missing afxres.h)
 # Install Python
@@ -111,11 +113,14 @@ zstd
 conan install . -pr x64-windows-static
 
 # Run Conan to install the dependencies
-conan install . --build=missing
+conan install . -pr x64-windows-static --build=missing
 
 
 cd /d c:\source
 git clone https://github.com/ultravnc/UltraVNC.git
+
+# End Common Steps cmake invocation
+
 
 mkdir obj && cd obj
 # Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
@@ -123,22 +128,25 @@ mkdir obj && cd obj
 #    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
 #    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
 #    ..\UltraVNC\cmake
+#set CL=/MP
 # Actual with Conan Not functional
-cmake .. "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" ..\UltraVNC\cmake
-set CL=/MP
+cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" ..\UltraVNC\cmake\conan
+
 cmake --build . --parallel --config=RelWithDebInfo
+
 
 
 
 
 ######################  Upgrade in progress for Conan Windows Visual Studio Users
 
-# Windows with cmake, using ninja build system, and address santitizer enabled
+# Windows with cmake, using ninja build system, and address sanitizer enabled
 
-# x64 Native Tools Command Prompt for VS 2022
+# Open git bash
 
-# Same steps before the cmake invocation as above
+# Same steps before the cmake invocation as above (# Common Steps cmake invocation)
 
+# Steps specific using ninja build system, and address sanitizer enabled
 cd /d c:\source
 mkdir obj_ninja && cd obj_ninja
 # Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
@@ -158,14 +166,16 @@ copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultr
 
 
 
+
 ######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, using LLVM compiler
 
-# x64 Native Tools Command Prompt for VS 2022
+# Open git bash
 
-# Same steps before the cmake invocation as above
+# Same steps before the cmake invocation as above (# Common Steps cmake invocation)
 
+# Steps specific using LLVM compiler
 cd /d c:\source
 mkdir obj_ninja_llvm && cd obj_ninja_llvm
 # Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
@@ -186,7 +196,7 @@ cmake --build . --parallel --config=RelWithDebInfo
 
 # Windows with regular Visual Studio project files
 
-# Same steps before the cmake invocation as above
+# Same steps before the cmake invocation as above (# Common Steps cmake invocation)
 
 # Install PlatformToolset matching to the project files, currently v143 for Visual Studio 2022 and v142 for Visual Studio 2019
 
@@ -201,3 +211,57 @@ set CL=/MP
 cd /d C:\source\UltraVNC
 msbuild %_P% winvnc\winvnc.sln
 msbuild %_P% vncviewer\vncviewer.sln
+
+
+
+
+
+######################  To Do Upgrade for Conan Qt Users
+
+# Windows with cmake, generate Qt project files (Qt Community Tests Specific)
+
+# Install git
+# Install Visual Studio Community 2022 (with MFC components to avoid errors about missing afxres.h)
+# Install Qt Creator Edition Community
+
+# Cross-platform Qt 6 CMake Project Setup (Windows)
+# System Variables and Path of Qt in Environnements Variables
+
+New Variable (if doesn't exist)
+Variable name		: QTDIR
+Variable value		: C:\Qt\6.7.2\msvc2019_64 (for msvc2019_64 or the path you put the compiler you want to use on your computer)
+
+Edit Path, add bin and lib
+# New (if doesn't exist)
+%QTDIR%\bin
+%QTDIR%\lib
+
+# New (Patch Error ZLIB not find see (Section: # Windows with cmake, generate Visual Studio project files))
+Variable name	: VCPKG_DEFAULT_TRIPLET
+Variable value	: x64-windows-static
+
+# Uninstall the vcpkg optional package from your Visual Studio instance (see VCPKG_README.txt if you want knowing why).
+# Edit Windows system environment variable
+# New (if doesn't exist)
+Variable name	: VCPKG_ROOT
+Variable value	: C:\source\vcpkg
+
+# Adding to Path
+%VCPKG_ROOT%
+
+Restart your computer.
+
+# Same steps before the cmake invocation as above (Section: # Windows with cmake, generate Visual Studio project files)
+
+# Install cmake (Windows)
+# Download and install from https://cmake.org/download/
+# Windows x64 Installer: cmake-3.30.2-windows-x86_64.msi (or version more recent and for your computer OS Specific)
+
+# On CMake (cmake-gui) use these
+	Where is the the source code 	: C:/source/UltraVNC/cmake
+	Where to build the binaries 	: C:/source/UltraVNC/build
+	Click on Configure for choose compiler version (Don't miss clic you can't go back to choose another).
+	(If Error ZLIB not find : try to update environment and see VCPKG_README.txt doesn't work for me actually. Note: same error with Visual Studio 2022)
+
+# Steps specific Qt Creator Community Edition below (In Progress)
+
