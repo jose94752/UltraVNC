@@ -98,10 +98,10 @@ conan profile update options.*:shared=False x64-windows-static  # Ensures static
 # Compiler MT you must use 'static' or 'dynamic' -> compiler.runtime=static
 # For replace the "conan profile update options.*:shared=False" adding these 3 lines below to the x64-windows-static profile.
 [options]
-shared=False
+*:shared=False
 [conf]
 
-# See the conanfile.txt files need it for install of these libraries
+# See the conanfile.py (former conanfile.txt) files need it for install of these libraries
 libjpeg-turbo
 liblzma
 libsodium
@@ -109,7 +109,7 @@ openssl
 zlib
 zstd
 
-# Call the install of libraries from conanfile.txt files with the profile x64-windows-static
+# Call the install of libraries from conanfile.py files with the profile x64-windows-static
 conan install . -pr x64-windows-static
 
 # Run Conan to install the dependencies
@@ -129,8 +129,8 @@ mkdir obj && cd obj
 #    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
 #    ..\UltraVNC\cmake
 #set CL=/MP
-# Actual with Conan Not functional
-cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" ..\UltraVNC\cmake\conan
+# Actual with Conan Not functional in the folder obj you must use these on the folder of Conan (cd /c/source/UltraVNC/cmake/conan/)
+cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" 
 
 cmake --build . --parallel --config=RelWithDebInfo
 

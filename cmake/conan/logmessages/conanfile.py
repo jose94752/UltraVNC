@@ -16,6 +16,7 @@ class logmessages(ConanFile):
         self.tool_requires("cmake/[>3.30]")
         
     def configure(self):
+        pass
         #self.options["qt/*"].shared = False #sample line
         #self.options["qt/*"].multimedia = True #sample line
 

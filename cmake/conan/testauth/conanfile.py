@@ -4,7 +4,8 @@ class testauth(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps"
     settings = "os", "compiler", "build_type", "arch"
     
-    def requirements(self):
+     def requirements(self):
+        pass
         #self.requires("libjpeg-turbo/[~3.0.4]")
         #self.requires("libsodium/[~cci.20220430]")
         #self.requires("xz_utils/[~5.4.5]") # LibLZMA
@@ -16,6 +17,7 @@ class testauth(ConanFile):
         self.tool_requires("cmake/[>3.30]")
         
     def configure(self):
+        pass
         #self.options["qt/*"].shared = False #sample line
         #self.options["qt/*"].multimedia = True #sample line
 

@@ -152,6 +152,24 @@ winvnc/winvnc/vcpkg_installed/
 CMakeUserPresets.json
 
 
+# Conan Specific gitignore
+cmake/conan/CMakeCache.txt
+cmake/conan/CMakeFiles/
+#v- Until I have specific folders of my computer on these one
+cmake/conan/CMakePresets.json
+cmake/conan/cmakedeps_macros.cmake
+cmake/conan/conan_toolchain.cmake
+cmake/conan/conanbuild.bat
+cmake/conan/conanbuildenv-release-x86_64.bat
+cmake/conan/conandeps_legacy.cmake
+cmake/conan/conanrun.bat
+cmake/conan/conanrunenv-release-x86_64.bat
+cmake/conan/deactivate_conanbuild.bat
+cmake/conan/deactivate_conanrun.bat
+
+# End Conan Specific gitignore
+
+
 # Qt Specific gitignore
 
 # Customized ignore section ---------------------------

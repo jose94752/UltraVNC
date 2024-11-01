@@ -49,7 +49,7 @@ conan profile update options.*:shared=False x86-windows  # Ensures static librar
 # Note for the compiler MT is doesn't allowed on Conan V2 you must use 'static' or 'dynamic' -> compiler.runtime=static
 # For replace the "conan profile update options.*:shared=False" adding these 3 lines below to the x86-windows profile.
 [options]
-shared=False
+*:shared=False
 [conf]
 
 # Set zlib in the conanfile.txt files need it
