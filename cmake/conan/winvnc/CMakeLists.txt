@@ -12,15 +12,15 @@ find_package(LibLZMA REQUIRED)
 find_package(unofficial-sodium CONFIG REQUIRED)
   
 set(${PROJECT_NAME}_SOURCES
-    ../../DSMPlugin/DSMPlugin.cpp
-    ../../ZipUnZip32/ZipUnzip32.cpp
-    ../../common/Clipboard.cpp
-    ../../common/Hyperlinks.cpp
-    ../../common/UltraVncZ.cpp
-    ../../common/d3des.c
-    ../../common/win32_helpers.cpp
-    ../../lzo/minilzo.c
-    ../../rfb/dh.cpp
+    ../../../DSMPlugin/DSMPlugin.cpp
+    ../../../ZipUnZip32/ZipUnzip32.cpp
+    ../../../common/Clipboard.cpp
+    ../../../common/Hyperlinks.cpp
+    ../../../common/UltraVncZ.cpp
+    ../../../common/d3des.c
+    ../../../common/win32_helpers.cpp
+    ../../../lzo/minilzo.c
+    ../../../rfb/dh.cpp
     CloudDialog.cpp
     CpuUsage.cpp
     DeskdupEngine.cpp
@@ -30,6 +30,7 @@ set(${PROJECT_NAME}_SOURCES
     IPC.cpp
     LayeredWindows.cpp
     MouseSimulator.cpp
+	PropertiesDialog.cpp
     ScreenCapture.cpp
     SettingsManager.cpp
     TextChat.cpp

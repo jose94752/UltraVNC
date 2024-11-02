@@ -20,9 +20,9 @@ set(${PROJECT_NAME}_SOURCES
 )
 add_executable(${PROJECT_NAME} WIN32)
 foreach(file ${${PROJECT_NAME}_SOURCES})
-    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../repeater/${file}")
+    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../repeater/${file}")
 endforeach(file)
-target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../repeater/resources.rc")
+target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../repeater/resources.rc")
 set_source_files_properties(${CMAKE_SOURCE_DIR}/../repeater/resources.rc LANGUAGE RC)
 target_link_libraries(${PROJECT_NAME}
     winmm

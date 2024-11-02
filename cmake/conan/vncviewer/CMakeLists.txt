@@ -11,17 +11,17 @@ find_package(zstd CONFIG REQUIRED)
 find_package(LibLZMA REQUIRED)
 
 set(${PROJECT_NAME}_SOURCES
-    ../DSMPlugin/DSMPlugin.cpp
-    ../ZipUnZip32/ZipUnzip32.cpp
-    ../common/Clipboard.cpp
-    ../common/Hyperlinks.cpp
-    ../common/UltraVncZ.cpp
-    ../common/mnemonic.c
-    ../common/mn_wordlist.c
-    ../common/d3des.c
-    ../common/win32_helpers.cpp
-    ../lzo/minilzo.c
-    ../rfb/dh.cpp
+    ../../DSMPlugin/DSMPlugin.cpp
+    ../../ZipUnZip32/ZipUnzip32.cpp
+    ../../common/Clipboard.cpp
+    ../../common/Hyperlinks.cpp
+    ../../common/UltraVncZ.cpp
+    ../../common/mnemonic.c
+    ../../common/mn_wordlist.c
+    ../../common/d3des.c
+    ../../common/win32_helpers.cpp
+    ../../lzo/minilzo.c
+    ../../rfb/dh.cpp
     AboutBox.cpp
     AccelKeys.cpp
     AuthDialog.cpp
@@ -73,13 +73,13 @@ set(${PROJECT_NAME}_SOURCES
     zrle.cpp
 )
 add_executable(${PROJECT_NAME} WIN32)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/..")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../omnithread")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../..")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../omnithread")
 foreach(file ${${PROJECT_NAME}_SOURCES})
-    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../vncviewer/${file}")
+    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../vncviewer/${file}")
 endforeach(file)
-target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../vncviewer/res/vncviewer.rc")
-set_source_files_properties(${CMAKE_SOURCE_DIR}/../vncviewer/res/vncviewer.rc LANGUAGE RC)
+target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../vncviewer/res/vncviewer.rc")
+set_source_files_properties(${CMAKE_SOURCE_DIR}/../../vncviewer/res/vncviewer.rc LANGUAGE RC)
 target_compile_definitions(${PROJECT_NAME} PRIVATE NDEBUG WIN32 _WINDOWS __NT__ _WINSTATIC __WIN32__ _VIEWER _XZ _CLOUD _VCPKG NOMINMAX)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE JPEG::JPEG

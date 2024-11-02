@@ -23,13 +23,13 @@ set(${PROJECT_NAME}_SOURCES
     vncsetauth.cpp
 )
 add_executable(${PROJECT_NAME} WIN32)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../DSMPlugin")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../omnithread")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../DSMPlugin")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../omnithread")
 foreach(file ${${PROJECT_NAME}_SOURCES})
-    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../uvnc_settings/uvnc_settings/${file}")
+    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../uvnc_settings/uvnc_settings/${file}")
 endforeach(file)
-target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../uvnc_settings/uvnc_settings/uvnc_settings.rc")
-set_source_files_properties(${CMAKE_SOURCE_DIR}/../uvnc_settings/uvnc_settings/uvnc_settings.rc LANGUAGE RC)
+target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../uvnc_settings/uvnc_settings/uvnc_settings.rc")
+set_source_files_properties(${CMAKE_SOURCE_DIR}/../../uvnc_settings/uvnc_settings/uvnc_settings.rc LANGUAGE RC)
 target_link_libraries(${PROJECT_NAME}
     libomnithread
     comctl32
