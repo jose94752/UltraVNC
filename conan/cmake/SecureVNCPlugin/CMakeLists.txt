@@ -2,7 +2,7 @@
 project(SecureVNCPlugin LANGUAGES CXX RC)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+#conan_basic_setup() #<- Disable old Conan V1 command: " CMake Error at CMakeLists.txt:11 (conan_basic_setup): Unknown CMake command "conan_basic_setup". "
 
 find_package(OpenSSL REQUIRED)
 

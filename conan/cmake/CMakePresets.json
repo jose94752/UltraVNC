@@ -30,7 +30,7 @@
                 "strategy": "external"
             },
             "toolchainFile": "conan_toolchain.cmake",
-            "binaryDir": "C:\\source\\UltraVNC\\cmake\\conan"
+            "binaryDir": "C:\\source\\UltraVNC\\conan\\cmake"
         }
     ],
     "buildPresets": [
@@ -39,6 +39,12 @@
             "configurePreset": "conan-default",
             "configuration": "Release",
             "jobs": 12
+        },
+        {
+            "name": "conan-relwithdebinfo",
+            "configurePreset": "conan-default",
+            "configuration": "RelWithDebInfo",
+            "jobs": 12
         }
     ],
     "testPresets": [
@@ -46,6 +52,11 @@
             "name": "conan-release",
             "configurePreset": "conan-default",
             "configuration": "Release"
+        },
+        {
+            "name": "conan-relwithdebinfo",
+            "configurePreset": "conan-default",
+            "configuration": "RelWithDebInfo"
         }
     ]
 }

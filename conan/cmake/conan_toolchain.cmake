@@ -42,8 +42,8 @@ cmake_policy(GET CMP0091 POLICY_CMP0091)
 if(NOT "${POLICY_CMP0091}" STREQUAL NEW)
     message(FATAL_ERROR "The CMake policy CMP0091 must be NEW, but is '${POLICY_CMP0091}'")
 endif()
-message(STATUS "Conan toolchain: Setting CMAKE_MSVC_RUNTIME_LIBRARY=$<$<CONFIG:Release>:MultiThreaded>")
-set(CMAKE_MSVC_RUNTIME_LIBRARY "$<$<CONFIG:Release>:MultiThreaded>")
+message(STATUS "Conan toolchain: Setting CMAKE_MSVC_RUNTIME_LIBRARY=$<$<CONFIG:Release>:MultiThreaded>$<$<CONFIG:RelWithDebInfo>:MultiThreadedDLL>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "$<$<CONFIG:Release>:MultiThreaded>$<$<CONFIG:RelWithDebInfo>:MultiThreadedDLL>")
 
 
 ########## 'cppstd' block #############
@@ -75,10 +75,13 @@ string(APPEND CONAN_C_FLAGS " /MP12")
 
 
 ########## 'extra_flags' block #############
+
+# Conan conf flags start: Release
+# Conan conf flags end
 # Include extra C++, C and linker flags from configuration tools.build:<type>flags
 # and from CMakeToolchain.extra_<type>_flags
 
-# Conan conf flags start: Release
+# Conan conf flags start: RelWithDebInfo
 # Conan conf flags end
 
 

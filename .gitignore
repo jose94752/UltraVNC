@@ -153,19 +153,21 @@ CMakeUserPresets.json
 
 
 # Conan Specific gitignore
-cmake/conan/CMakeCache.txt
-cmake/conan/CMakeFiles/
+conan/cmake/CMakeCache.txt
+conan/cmake/CMakeFiles/
 #v- Until I have specific folders of my computer on these one
-cmake/conan/CMakePresets.json
-cmake/conan/cmakedeps_macros.cmake
-cmake/conan/conan_toolchain.cmake
-cmake/conan/conanbuild.bat
-cmake/conan/conanbuildenv-release-x86_64.bat
-cmake/conan/conandeps_legacy.cmake
-cmake/conan/conanrun.bat
-cmake/conan/conanrunenv-release-x86_64.bat
-cmake/conan/deactivate_conanbuild.bat
-cmake/conan/deactivate_conanrun.bat
+conan/cmake/CMakePresets.json
+conan/cmake/cmakedeps_macros.cmake
+conan/cmake/conan_toolchain.cmake
+conan/cmake/conanbuild.bat
+conan/cmake/conanbuildenv-release-x86_64.bat
+conan/cmake/conanbuildenv-relwithdebinfo-x86_64.bat
+conan/cmake/conandeps_legacy.cmake
+conan/cmake/conanrun.bat
+conan/cmake/conanrunenv-release-x86_64.bat
+conan/cmake/conanrunenv-relwithdebinfo-x86_64.bat
+conan/cmake/deactivate_conanbuild.bat
+conan/cmake/deactivate_conanrun.bat
 
 # End Conan Specific gitignore
 

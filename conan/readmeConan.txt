@@ -75,8 +75,8 @@ pip install conan
 conan --version
 pip show conan
 
-# Go to the directory /cmake/conan (Windows adapt for Linux and others)
-cd /c/source/UltraVNC/cmake/conan/
+# Go to the directory /conan/cmake (Windows adapt for Linux and others)
+cd /c/source/UltraVNC/conan/cmake
 
 # First create the Conan default profile (if you just install Conan and you have not set these one)
 # Creating the Conan default profile
@@ -129,7 +129,7 @@ mkdir obj && cd obj
 #    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
 #    ..\UltraVNC\cmake
 #set CL=/MP
-# Actual with Conan Not functional in the folder obj you must use these on the folder of Conan (cd /c/source/UltraVNC/cmake/conan/)
+# Actual with Conan Not functional in the folder obj you must use these on the folder of Conan (cd /c/source/UltraVNC/conan/cmake/)
 cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" 
 
 cmake --build . --parallel --config=RelWithDebInfo
