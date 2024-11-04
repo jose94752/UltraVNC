@@ -4,7 +4,7 @@ class UltraVNC(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps"
     settings = "os", "compiler", "build_type", "arch"
     
-     def requirements(self):
+    def requirements(self):
         pass
         #self.requires("libjpeg-turbo/[~3.0.4]")
         #self.requires("libsodium/[~cci.20220430]")
@@ -23,7 +23,15 @@ class UltraVNC(ConanFile):
 
     def layout(self):
         self.folders.generators = ""
-
+    
+    def source(self):
+        pass
+    
+    def generate(self):
+        pass
+        #tc = CMakeToolchain(self)
+        #tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0091"] = "NEW"
+        #tc.generate()
 
 # Original from the conanfile.txt
 ## Section for required dependencies
