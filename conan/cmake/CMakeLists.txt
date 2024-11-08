@@ -10,6 +10,10 @@ cmake_policy(SET CMP0091 NEW)			#
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 #conan_basic_setup() #<- Disable old Conan V1 command: " CMake Error at CMakeLists.txt:11 (conan_basic_setup): Unknown CMake command "conan_basic_setup". "
 
+#find_program(CCACHE_FOUND ccache)
+#if(CCACHE_FOUND)
+#    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+#endif()
 
 if (MINGW)
     set(CMAKE_C_FLAGS "-Wno-write-strings")

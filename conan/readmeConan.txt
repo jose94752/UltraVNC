@@ -87,6 +87,16 @@ conan profile detect
 # Create Conan Build Profile for x64-windows-static
 conan profile detect --name x64-windows-static
 
+#export PATH=/usr/lib/ccache:$PATH			<- Trouver l'équivalent Windows
+#$env:PATH = "C:\path\to\ccache;" + $env:PATH
+# pour Vcpkg
+$env:PATH = "C:\source\vcpkg\installed\x64-windows-static\lib\ccache;" + $env:PATH
+# Libraries for Conan V1 (Old)
+C:\Users\<VotreNomUtilisateur>\.conan\data\<nom_bibliothèque>\<version>\<fournisseur>
+# Libraries for Conan V2
+C:\Users\<VotreNomUtilisateur>\.conan2\p\<nom_bibliothèque>\<version>\<fournisseur>
+
+
 # Conan v1 commands (we can't use them they are no logger support on Conan version 2!)
 conan profile update settings.arch=x86_64 x64-windows-static
 conan profile update settings.os=Windows x64-windows-static
@@ -108,6 +118,12 @@ libsodium
 openssl
 zlib
 zstd
+
+# Command for find packages of library example
+conan search "zlib"
+
+# Install libraries commands
+conan install . -pr x64-windows-static --build zlib/1.3.1
 
 # Call the install of libraries from conanfile.py files with the profile x64-windows-static
 conan install . -pr x64-windows-static

@@ -75,15 +75,15 @@ string(APPEND CONAN_C_FLAGS " /MP12")
 
 
 ########## 'extra_flags' block #############
-
-# Conan conf flags start: Release
-# Conan conf flags end
 # Include extra C++, C and linker flags from configuration tools.build:<type>flags
 # and from CMakeToolchain.extra_<type>_flags
 
-# Conan conf flags start: RelWithDebInfo
+# Conan conf flags start: Release
 # Conan conf flags end
 
+
+# Conan conf flags start: RelWithDebInfo
+# Conan conf flags end
 
 ########## 'cmake_flags_init' block #############
 # Define CMAKE_<XXX>_FLAGS from CONAN_<XXX>_FLAGS
