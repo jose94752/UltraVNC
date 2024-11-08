@@ -26,6 +26,7 @@ vcpkg install zstd:x64-mingw-static
 vcpkg install libjpeg-turbo:x64-mingw-static
 vcpkg install liblzma:x64-mingw-static
 vcpkg install openssl:x64-mingw-static
+vcpkg install libsodium:x64-mingw-static
 
 
 
@@ -57,8 +58,13 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 
 # Windows with cmake, generate Visual Studio project files
 
+# Common Steps cmake invocation
+
 # Install git
 # Install Visual Studio Community 2022 (with MFC components to avoid errors about missing afxres.h)
+#	If you have Visual Studio Build Tools 2019 with VSC 2022 (install on it MFC components too for same reason)
+#		and install Windows SDK Version 8.1 (for Errors errors MSB8036)
+#       Don't install the vcpkg integrated package of Visual Studio 2022 it will change your VCPKG_ROOT path variable
 
 # Open git bash
 
@@ -70,8 +76,13 @@ ls
 #^ For check install and if the file bootstrap-vcpkg.bat is here.
 
 
-# Developer Command Prompt for VS
-# (/!\ Don't Open Visual Studio until you have configure all, may be the environment crash your install! So open the prompt from explorer i.e. "Windows Studio 2022" the folder -and-> "Developer Command Prompt for VS 2022" shortcut)
+# Developer Command Prompt for VS <- Don't Use this one for vcpkg it's bette to use x64 see that v
+# c:\source\vcpkg>vcpkg install zlib
+# Computing installation plan...
+# warning: vcpkg appears to be in a Visual Studio prompt targeting x86 but installing for x64-windows-static. Consider using --triplet x86-windows or --triplet x86-uwp.
+# x64 Native Tools Command Prompt for VS 2022 <- Use this
+
+# (/!\ Don't Open Visual Studio until you have configure all, may be the environment crash your install! So open the prompt from explorer i.e. "Windows Studio 2022" the folder -and-> "x64 Native Tools Command Prompt for VS 2022" shortcut)
 
 cd /d c:\source\vcpkg
 bootstrap-vcpkg.bat -disableMetrics
@@ -102,8 +113,10 @@ OR set on Windows environment variables
 Create System user variables :
 Name  : VCPKG_DEFAULT_TRIPLET
 Value : x64-windows-static
+(Nota : previously I test with these in Windows System environment variables)
 
 vcpkg --version
+
 
 # If you get this message:
 #   vcpkg could not locate a manifest (vcpkg.json);
@@ -117,6 +130,7 @@ vcpkg install zstd:x64-windows-static
 vcpkg install libjpeg-turbo:x64-windows-static
 vcpkg install liblzma:x64-windows-static
 vcpkg install openssl:x64-windows-static
+vcpkg install libsodium:x64-windows-static
 
 # If you have set VCPKG_DEFAULT_TRIPLET variable the do these see (# If you want set the VCPKG_DEFAULT_TRIPLET variable) otherwise use above
 vcpkg install zlib
@@ -124,6 +138,7 @@ vcpkg install zstd
 vcpkg install libjpeg-turbo
 vcpkg install liblzma
 vcpkg install openssl
+vcpkg install libsodium
 
 vcpkg integrate install
 
@@ -134,6 +149,8 @@ git clone https://github.com/ultravnc/UltraVNC.git
 # End Common Steps cmake invocation
 
 
+# Steps specific using cmake, generate Visual Studio project files
+cd /d c:\source
 mkdir obj && cd obj
 cmake ^
     -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^

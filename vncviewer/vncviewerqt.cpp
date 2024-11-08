@@ -3,7 +3,7 @@
 */
 
 #include "vncviewerqt.h"
-#include "vncviewerqt.ui"
+#include "ui_vncviewerqt.h"
 
 VNCViewerQt::VNCViewerQt(QWidget *parent)
     : QMainWindow(parent)

@@ -11,6 +11,7 @@
 #include "vncconndialog.h"
 #include "credentials.h"
 #include <shlwapi.h>
+#include "DlgChangePassword.h"
 
 extern HINSTANCE	hInstResDLL;
 
@@ -38,6 +39,10 @@ BOOL CALLBACK PropertiesDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			case IDCANCEL:				
 				_this->onCancel(hwnd);
 				return TRUE;
+			case IDC_APPLY:
+				_this->onApply(hwnd);
+				EnableWindow(GetDlgItem(hwnd, IDC_APPLY), false);
+				return TRUE;
 			case IDOK:
 				_this->onOK(hwnd);				
 				return TRUE;
@@ -55,7 +60,7 @@ BOOL CALLBACK PropertiesDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 bool PropertiesDialog::InitDialog(HWND hwnd)
 {
 	PropertiesDialogHwnd = hwnd;
-
+	EnableWindow(GetDlgItem(hwnd, IDC_APPLY), false);
 	SetForegroundWindow(hwnd);
 	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_WINVNC));
 	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
@@ -304,7 +309,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		return (LONG)(INT_PTR)GetStockObject(WHITE_BRUSH);
 	}
 	case WM_COMMAND:
-		_this->onCommand(LOWORD(wParam), hwnd);
+		_this->onCommand(LOWORD(wParam), hwnd, HIWORD(wParam));
 	}
 	return (INT_PTR)FALSE;
 }
@@ -523,33 +528,6 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 			0);
 	}
 
-	if (GetDlgItem(hwnd, IDC_DREFUSE)) {
-		HWND hQuerySetting{};
-		int QueryAccept = 0;
-		if (settings->getQuerySetting() == 2)
-			QueryAccept = 0;
-		else
-			QueryAccept = settings->getQueryAccept();
-
-		switch (QueryAccept) {
-		case 0:
-			hQuerySetting = GetDlgItem(hwnd, IDC_DREFUSE);
-			break;
-		case 1:
-			hQuerySetting = GetDlgItem(hwnd, IDC_DACCEPT);
-			break;
-		case 2:
-			hQuerySetting = GetDlgItem(hwnd, IDC_DRefuseOnly);
-			break;
-		default:
-			hQuerySetting = GetDlgItem(hwnd, IDC_DREFUSE);
-		};
-		SendMessage(hQuerySetting,
-			BM_SETCHECK,
-			TRUE,
-			0);
-	}
-
 	if (GetDlgItem(hwnd, IDC_MAXREFUSE)) {
 		HWND hMaxViewerSetting = NULL;
 		switch (settings->getMaxViewerSetting()) {
@@ -606,6 +584,33 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 		SendMessage(GetDlgItem(hwnd, IDC_PLUGIN_CHECK), BM_SETCHECK, settings->getUseDSMPlugin(), 0);
 
 	// Query window option - Taken from TightVNC advanced properties
+	if (GetDlgItem(hwnd, IDC_DREFUSE)) {
+		HWND hQuerySetting{};
+		int QueryAccept = 0;
+		if (settings->getQuerySetting() == 2)
+			QueryAccept = 0;
+		else
+			QueryAccept = settings->getQueryAccept();
+
+		switch (QueryAccept) {
+		case 0:
+			hQuerySetting = GetDlgItem(hwnd, IDC_DREFUSE);
+			break;
+		case 1:
+			hQuerySetting = GetDlgItem(hwnd, IDC_DACCEPT);
+			break;
+		case 2:
+			hQuerySetting = GetDlgItem(hwnd, IDC_DRefuseOnly);
+			break;
+		default:
+			hQuerySetting = GetDlgItem(hwnd, IDC_DREFUSE);
+		};
+		SendMessage(hQuerySetting,
+			BM_SETCHECK,
+			TRUE,
+			0);
+	}
+
 	BOOL queryEnabled = (settings->getQuerySetting() == 4);
 
 	if (GetDlgItem(hwnd, IDQUERY))
@@ -632,6 +637,12 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 		EnableWindow(GetDlgItem(hwnd, IDC_DACCEPT), queryEnabled);
 	if (GetDlgItem(hwnd, IDC_QNOLOGON))
 		EnableWindow(GetDlgItem(hwnd, IDC_QNOLOGON), queryEnabled);
+	if (GetDlgItem(hwnd, IDC_EDITQUERYTEXT))
+		EnableWindow(GetDlgItem(hwnd, IDC_EDITQUERYTEXT), queryEnabled);
+
+
+
+	//////////////////
 
 	if (GetDlgItem(hwnd, IDC_SERVICE_COMMANDLINE))
 		SetDlgItemText(hwnd, IDC_SERVICE_COMMANDLINE, settings->getService_commandline());
@@ -711,23 +722,6 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 	if (GetDlgItem(hwnd, IDC_AUTOCAPT3))
 		CheckDlgButton(hwnd, IDC_AUTOCAPT3, (settings->getAutocapt() == 3) ? BST_CHECKED : BST_UNCHECKED);
 
-	if (GetDlgItem(hwnd, IDC_PASSWORD)) {
-#ifndef SC_20
-		// Set the content of the password field to a predefined string.
-		SetDlgItemText(hwnd, IDC_PASSWORD, "~~~~~~~~");
-		EnableWindow(GetDlgItem(hwnd, IDC_PASSWORD), bConnectSock);
-
-		// Set the content of the view-only password field to a predefined string. //PGM
-		SetDlgItemText(hwnd, IDC_PASSWORD2, "~~~~~~~~"); //PGM
-		EnableWindow(GetDlgItem(hwnd, IDC_PASSWORD2), bConnectSock); //PGM
-#endif // SC_20
-		// Set the initial keyboard focus
-		if (bConnectSock) {
-			SetFocus(GetDlgItem(hwnd, IDC_PASSWORD));
-			SendDlgItemMessage(hwnd, IDC_PASSWORD, EM_SETSEL, 0, (LPARAM)-1);
-		}
-	}
-
 	if (GetDlgItem(hwnd, IDC_IDLETIME))
 		SetDlgItemInt(hwnd, IDC_IDLETIME, settings->getIdleTimeout(), FALSE);
 	if (GetDlgItem(hwnd, IDC_IDLETIMEINPUT))
@@ -737,13 +731,15 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 
 	if (GetDlgItem(hwnd, IDC_AUTHREQUIRED))
 		CheckDlgButton(hwnd, IDC_AUTHREQUIRED, (settings->getAuthRequired() == 1) ? BST_CHECKED : BST_UNCHECKED);
+	EnableWindow(GetDlgItem(hwnd, IDC_CLEARPASSWORD), settings->getAuthRequired() == 0);
+	EnableWindow(GetDlgItem(hwnd, IDC_CLEARPASSWORDVO), settings->getAuthRequired() == 0);
 
 	if (GetDlgItem(hwnd, IDC_ALLOWUSERSSETTINGS)) {
 		CheckDlgButton(hwnd, IDC_ALLOWUSERSSETTINGS, (settings->getAllowUserSettingsWithPassword() == 1) ? BST_CHECKED : BST_UNCHECKED);
 	}
 
 	if (GetDlgItem(hwnd, IDC_QNOLOGON))
-		SendMessage(GetDlgItem(hwnd, IDC_QNOLOGON), BM_SETCHECK, settings->getQueryIfNoLogon(), 0);
+		SendMessage(GetDlgItem(hwnd, IDC_QNOLOGON), BM_SETCHECK, !settings->getQueryIfNoLogon(), 0);
 
 	if (!settings->getLoopbackOnly() && GetDlgItem(hwnd, IDC_IP_ACCESS_CONTROL_LIST))
 		rulesListView->init(GetDlgItem(hwnd, IDC_IP_ACCESS_CONTROL_LIST));
@@ -754,7 +750,7 @@ bool PropertiesDialog::DlgInitDialog(HWND hwnd)
 		SendMessage(GetDlgItem(hwnd, IDC_SEC), BM_SETCHECK, settings->getSecondary(), 0);
 
 	SetForegroundWindow(hwnd);
-
+	EnableWindow(GetDlgItem(PropertiesDialogHwnd, IDC_APPLY), false);
 	return FALSE; // Because we've set the focus
 }
 
@@ -979,8 +975,12 @@ int PropertiesDialog::ListPlugins(HWND hComboBox)
 	return nFiles;
 }
 
-bool PropertiesDialog::onCommand( int command, HWND hwnd)
+bool PropertiesDialog::onCommand( int command, HWND hwnd, int subcommand)
 {
+	if ((command != IDC_SERVICE_COMMANDLINE && command != IDC_IDLETIMEINPUT &&
+		command != IDC_KINTERVAL && command != IDC_PORTRFB && command != IDC_PORTHTTP &&
+		command != IDC_SCALE)|| subcommand == 1024)
+	EnableWindow(GetDlgItem(PropertiesDialogHwnd, IDC_APPLY), true);
 	switch (command) {
 	case IDC_REMOVE_BUTTON:
 		rulesListView->removeSelectedItem();
@@ -1013,7 +1013,11 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 		EndDialog(PropertiesDialogHwnd, IDCANCEL);
 		m_dlgvisible = FALSE;
 		return TRUE;
+	case IDC_APPLY:
+		onTabsAPPLY(hwnd);
+		return TRUE;
 	case IDOK:
+		onTabsAPPLY(hwnd);
 		onTabsOK(hwnd);
 		return TRUE;
 	case IDC_POLL_FOREGROUND:
@@ -1067,8 +1071,6 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 			(SendDlgItemMessage(hwnd, IDC_CONNECT_HTTP,
 				BM_GETCHECK, 0, 0) == BST_CHECKED);
 
-		EnableWindow(GetDlgItem(hwnd, IDC_PASSWORD), bConnectSock);
-
 		HWND hPortNoAuto = GetDlgItem(hwnd, IDC_PORTNO_AUTO);
 		EnableWindow(hPortNoAuto, bConnectSock);
 		HWND hSpecPort = GetDlgItem(hwnd, IDC_SPECPORT);
@@ -1112,12 +1114,15 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 		{
 			HWND hQuery = GetDlgItem(hwnd, IDQUERY);
 			BOOL queryon = (SendMessage(hQuery, BM_GETCHECK, 0, 0) == BST_CHECKED);
+			settings->setQuerySetting(queryon ? 4 : 2);
+
 			EnableWindow(GetDlgItem(hwnd, IDQUERYTIMEOUT), queryon);
 			EnableWindow(GetDlgItem(hwnd, IDC_QUERYDISABLETIME), queryon);
 			EnableWindow(GetDlgItem(hwnd, IDC_DREFUSE), queryon);
 			EnableWindow(GetDlgItem(hwnd, IDC_DRefuseOnly), queryon);
 			EnableWindow(GetDlgItem(hwnd, IDC_DACCEPT), queryon);
 			EnableWindow(GetDlgItem(hwnd, IDC_QNOLOGON), queryon);
+			EnableWindow(GetDlgItem(hwnd, IDC_EDITQUERYTEXT), queryon);
 		}
 		return TRUE;
 
@@ -1146,6 +1151,13 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 		EnableWindow(GetDlgItem(hwnd, IDC_NEW_MSLOGON), bMSLogonChecked);
 		EnableWindow(GetDlgItem(hwnd, IDC_MSLOGON), bMSLogonChecked);
 	}
+	case IDC_AUTHREQUIRED:{
+		bool checked = (SendMessage(GetDlgItem(hwnd, IDC_AUTHREQUIRED), BM_GETCHECK, 0, 0) == BST_CHECKED);
+		EnableWindow(GetDlgItem(hwnd, IDC_CLEARPASSWORD), checked == 0);
+		EnableWindow(GetDlgItem(hwnd, IDC_CLEARPASSWORDVO), checked == 0);
+	}
+
+
 	return TRUE;
 
 #ifndef SC_20
@@ -1197,7 +1209,64 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 	}
 	return TRUE;
 #endif // SC_20
+	case IDC_CHANGEPASSWORD:
+	{
+		DlgChangePassword* dlgChangePassword = new DlgChangePassword();
+		if (dlgChangePassword->ShowDlg(NULL, "Change/Set password", 8)) {
+			char password[1024];
+			strcpy_s(password, dlgChangePassword->getPassword());
+			if (strlen(password) == 0) {
+				settings->setPasswd(password);
+				settings->savePassword();
+			}
+			else {
+				vncPasswd::FromText crypt(password, settings->getSecure());
+				settings->setPasswd(crypt);
+				settings->savePassword();
+			}
+		}
+		return true;
+	}
+	case IDC_CHANGEPASSWORDVO:
+	{
+		DlgChangePassword* dlgChangePassword = new DlgChangePassword();
+		if (dlgChangePassword->ShowDlg(NULL, "Change/Set View-only password", 8)) {
+			char password[1024];
+			strcpy_s(password, dlgChangePassword->getPassword());
+			if (strlen(password) == 0) {
+				settings->setPasswdViewOnly(password);
+				settings->saveViewOnlyPassword();
+			}
+			else {
+				vncPasswd::FromText crypt2(password, settings->getSecure());
+				settings->setPasswdViewOnly(crypt2);
+				settings->saveViewOnlyPassword();
+			}
+		}
+		return true;
+	}
+	case IDC_CHANGEPASSWORDADMIN: {
+		DlgChangePassword* dlgChangePassword = new DlgChangePassword();
+		if (dlgChangePassword->ShowDlg(NULL, "Change/Set Admin password", 128)) {
+			char password[1024];
+			strcpy_s(password, dlgChangePassword->getPassword());
+			settings->setAdminPasswordHash(password);
+		}
+	}
+		return true;
 
+	case IDC_CLEARPASSWORD:
+	{
+		settings->setPasswd("");
+		settings->savePassword();
+		return true;
+	}
+	case IDC_CLEARPASSWORDVO:
+	{
+		settings->setPasswdViewOnly("");
+		settings->saveViewOnlyPassword();
+		return true;
+	}
 	case IDC_PLUGIN_BUTTON:
 	{
 		if (m_server) {
@@ -1231,7 +1300,7 @@ bool PropertiesDialog::onCommand( int command, HWND hwnd)
 	case IDC_CHECKIP: 
 		{
 		char oldAuthHost[1280];
-		strcpy(oldAuthHost, settings->getAuthhosts());
+		strcpy_s(oldAuthHost, settings->getAuthhosts());
 		settings->setAuthhosts(rulesListView->getAuthHost());
 		char tempchar[25];
 		GetDlgItemText(hwnd, IDC_IP_FOR_CHECK_EDIT, tempchar, 25);
@@ -1312,7 +1381,7 @@ void PropertiesDialog::Secure_Plugin(char* szPlugin)
 	}
 }
 
-void PropertiesDialog::onTabsOK(HWND hwnd)
+void PropertiesDialog::onTabsAPPLY(HWND hwnd)
 {
 	if (GetDlgItem(hwnd, IDC_PRIM))
 		settings->setPrimary(SendMessage(GetDlgItem(hwnd, IDC_PRIM), BM_GETCHECK, 0, 0) == BST_CHECKED);
@@ -1420,59 +1489,33 @@ void PropertiesDialog::onTabsOK(HWND hwnd)
 		}
 		settings->setDebugPath(path);
 	}
-	bool Secure_old = settings->getSecure();
+
 	if (GetDlgItem(hwnd, IDC_SAVEPASSWORDSECURE)) {
+		bool Secure_old = settings->getSecure();
 		HWND hSecure = GetDlgItem(hwnd, IDC_SAVEPASSWORDSECURE);
 		settings->setSecure(SendMessage(hSecure, BM_GETCHECK, 0, 0) == BST_CHECKED);
-	}
-
-	if (GetDlgItem(hwnd, IDC_PASSWORD)) {
-		char passwd[MAXPWLEN + 1];
-		char passwd2[MAXPWLEN + 1];
-		memset(passwd, '\0', MAXPWLEN + 1); //PGM
-		memset(passwd2, '\0', MAXPWLEN + 1); //PGM
-		int lenPassword = GetDlgItemText(hwnd, IDC_PASSWORD, (LPSTR)&passwd, MAXPWLEN + 1);
-		int lenPassword2 = GetDlgItemText(hwnd, IDC_PASSWORD2, (LPSTR)&passwd2, MAXPWLEN + 1); //PGM
-
-		bool bSecure = settings->getSecure() ? true : false;
+		bool bSecure = settings->getSecure();
 		if (Secure_old != bSecure) {
 			//We changed the method to save the password
 			//load passwords and encrypt the other method
 			vncPasswd::ToText plain(settings->getPasswd(), Secure_old);
-			vncPasswd::ToText plain2(settings->getPasswd2(), Secure_old);
+			vncPasswd::ToText plainViewOnly(settings->getPasswdViewOnly(), Secure_old);
+			char passwd[MAXPWLEN + 1];
+			char passwdViewOnly[MAXPWLEN + 1];
 			memset(passwd, '\0', MAXPWLEN + 1); //PGM
-			memset(passwd2, '\0', MAXPWLEN + 1); //PGM
+			memset(passwdViewOnly, '\0', MAXPWLEN + 1); //PGM
 			strcpy_s(passwd, plain);
-			strcpy_s(passwd2, plain2);
-			lenPassword = (int)strlen(passwd);
-			lenPassword2 = (int)strlen(passwd2);
-		}
-
-		if (strcmp(passwd, "~~~~~~~~") != 0) {
-			if (lenPassword == 0) {
-				vncPasswd::FromClear crypt(settings->getSecure());
-				settings->setPasswd(crypt);
-			}
-			else {
+			strcpy_s(passwdViewOnly, plainViewOnly);
+			int lenPassword = (int)strlen(passwd);
+			int lenPasswordViewOnly = (int)strlen(passwdViewOnly);
+			if (lenPassword != 0) {
 				vncPasswd::FromText crypt(passwd, settings->getSecure());
 				settings->setPasswd(crypt);
 			}
-		}
-
-		if (strcmp(passwd2, "~~~~~~~~") != 0) {
-			if (lenPassword2 == 0) {
-				vncPasswd::FromClear crypt2(settings->getSecure());
-				settings->setPasswd2(crypt2);
+			if (lenPasswordViewOnly != 0) {
+				vncPasswd::FromText crypt2(passwdViewOnly, settings->getSecure());
+				settings->setPasswdViewOnly(crypt2);
 			}
-			else {
-				vncPasswd::FromText crypt2(passwd2, settings->getSecure());
-				settings->setPasswd2(crypt2);
-			}
-		}
-
-		if (strcmp(passwd, "~~~~~~~~") != 0 && strcmp(passwd2, "~~~~~~~~") != 0) {
-			if (strcmp(passwd, passwd2) == 0)
-				MessageBox(NULL, "View only and full password are the same\nView only ignored", "Warning", 0);
 		}
 	}
 
@@ -1589,7 +1632,7 @@ void PropertiesDialog::onTabsOK(HWND hwnd)
 		}
 	}
 	if (GetDlgItem(hwnd, IDC_QNOLOGON))
-		settings->setQueryIfNoLogon(SendDlgItemMessage(hwnd, IDC_QNOLOGON, BM_GETCHECK, 0, 0));
+		settings->setQueryIfNoLogon(!SendDlgItemMessage(hwnd, IDC_QNOLOGON, BM_GETCHECK, 0, 0));
 
 	if (GetDlgItem(hwnd, IDC_MAXREFUSE) && GetDlgItem(hwnd, IDC_MAXDISCONNECT)) {
 		if (SendMessage(GetDlgItem(hwnd, IDC_MAXREFUSE), BM_GETCHECK, 0, 0) == BST_CHECKED) {
@@ -1724,10 +1767,10 @@ void PropertiesDialog::onTabsOK(HWND hwnd)
 	}
 
 	if (GetDlgItem(hwnd, IDC_VIDEO)) {
-			if (IsDlgButtonChecked(hwnd, IDC_VIDEO))
-				vnclog.SetVideo(true);
-			else
-				vnclog.SetVideo(false);
+		if (IsDlgButtonChecked(hwnd, IDC_VIDEO))
+			vnclog.SetVideo(true);
+		else
+			vnclog.SetVideo(false);
 	}
 
 	if (GetDlgItem(hwnd, IDC_MSLOGON_CHECKD)) {
@@ -1806,19 +1849,12 @@ void PropertiesDialog::onTabsOK(HWND hwnd)
 
 	settings->setAuthhosts(rulesListView->getAuthHost());
 
-	if (GetDlgItem(hwnd, IDC_ADMINPASSWORD)) {
-		char passwd[1024]{};
-		GetDlgItemText(hwnd, IDC_ADMINPASSWORD, (LPSTR)&passwd, 1024);
-		settings->setAdminPasswordHash(passwd);
-	}
 	if (GetDlgItem(hwnd, IDC_ALLOWUSERSSETTINGS)) {
 		settings->setAllowUserSettingsWithPassword(SendMessage(GetDlgItem(hwnd, IDC_ALLOWUSERSSETTINGS), BM_GETCHECK, 0, 0) == BST_CHECKED);
 	}
-	
-
-#ifndef SC_20
-	settings->save();
-#endif // SC_20	
+}
+void PropertiesDialog::onTabsOK(HWND hwnd)
+{
 	EndDialog(hwnd, IDOK);
 	m_dlgvisible = FALSE;
 }
@@ -1851,8 +1887,23 @@ void PropertiesDialog::InitPortSettings(HWND hwnd)
 	}
 }
 
-void PropertiesDialog::onOK(HWND hwnd)
+void PropertiesDialog::onApply(HWND hwnd)
 {
+	SendMessage(hTabAuthentication, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabIncoming, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabInput, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabMisc, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabNotifications, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabReverse, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabRules, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabCapture, WM_COMMAND, IDC_APPLY, 0);
+	SendMessage(hTabAdministration, WM_COMMAND, IDC_APPLY, 0);
+}
+void PropertiesDialog::onOK(HWND hwnd)
+	{
+#ifndef SC_20
+	settings->save();
+#endif // SC_20	
 	SendMessage(hTabAuthentication, WM_COMMAND, IDOK, 0);
 	SendMessage(hTabIncoming, WM_COMMAND, IDOK, 0);
 	SendMessage(hTabInput, WM_COMMAND, IDOK, 0);
@@ -1862,6 +1913,7 @@ void PropertiesDialog::onOK(HWND hwnd)
 	SendMessage(hTabRules, WM_COMMAND, IDOK, 0);
 	SendMessage(hTabCapture, WM_COMMAND, IDOK, 0);
 	SendMessage(hTabAdministration, WM_COMMAND, IDOK, 0);
+
 	DestroyWindow(hTabAuthentication);
 	DestroyWindow(hTabIncoming);
 	DestroyWindow(hTabInput);
@@ -1871,7 +1923,6 @@ void PropertiesDialog::onOK(HWND hwnd)
 	DestroyWindow(hTabRules);
 	DestroyWindow(hTabCapture);
 	DestroyWindow(hTabAdministration);
-	//Save_settings();
 	EndDialog(hwnd, TRUE);
 }
 void PropertiesDialog::onCancel(HWND hwnd)
