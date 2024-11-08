@@ -1,5 +1,5 @@
 /*
- * mainwindows Qt Headers vncviewerQt.h from vncviewer.h
+ * mainwindows Qt Headers vncviewerqt.h from vncviewer.h
 */
 
 
