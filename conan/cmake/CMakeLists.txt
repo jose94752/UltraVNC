@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 14)
 cmake_policy(PUSH)						# Conan require a minimum version of 3.15.0 patch Error " The CMake policy CMP0091 must be NEW, but is '' "
 cmake_policy(SET CMP0091 NEW)			#	
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake) #<- Disable Using `conan_toolchain.cmake` : `conan_toolchain.cmake` and `conanbuildinfo.cmake` are not usually used together. If you use the toolchain, do not include `conanbuildinfo.cmake`.
 #conan_basic_setup() #<- Disable old Conan V1 command: " CMake Error at CMakeLists.txt:11 (conan_basic_setup): Unknown CMake command "conan_basic_setup". "
 
 #find_program(CCACHE_FOUND ccache)

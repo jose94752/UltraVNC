@@ -53,7 +53,6 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 
 
 
-
 ######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, generate Visual Studio project files
@@ -61,10 +60,13 @@ cp -a /usr/lib/gcc/x86_64-w64-mingw32/13-win32/libgcc_s_seh-1.dll .
 # Common Steps cmake invocation
 
 # Install git
+
 # Install Visual Studio Community 2022 (with MFC components to avoid errors about missing afxres.h)
+#	If you have Visual Studio Build Tools 2019 with VSC 2022 (install on it MFC components too for same reason)
+#		and install Windows SDK Version 8.1 (for Errors errors MSB8036)
+
+
 # Install Python
-
-
 # Open git bash
 
 mkdir c:/source
@@ -75,7 +77,7 @@ pip install conan
 conan --version
 pip show conan
 
-# Go to the directory /conan/cmake (Windows adapt for Linux and others)
+# Go to the directory /conan/cmake
 cd /c/source/UltraVNC/conan/cmake
 
 # First create the Conan default profile (if you just install Conan and you have not set these one)
@@ -87,16 +89,23 @@ conan profile detect
 # Create Conan Build Profile for x64-windows-static
 conan profile detect --name x64-windows-static
 
-#export PATH=/usr/lib/ccache:$PATH			<- Trouver l'équivalent Windows
+
+# Open Windows powershell
+or
+# Open Developer PowerShell for VS 2022
+#export PATH=/usr/lib/ccache:$PATH			<- Searching the same for Windows In Progress
 #$env:PATH = "C:\path\to\ccache;" + $env:PATH
-# pour Vcpkg
+# For Vcpkg
 $env:PATH = "C:\source\vcpkg\installed\x64-windows-static\lib\ccache;" + $env:PATH
 # Libraries for Conan V1 (Old)
-C:\Users\<VotreNomUtilisateur>\.conan\data\<nom_bibliothèque>\<version>\<fournisseur>
+#C:\Users\<YourUserName>\.conan\data\<library_name>\<version>\<provider>
 # Libraries for Conan V2
-C:\Users\<VotreNomUtilisateur>\.conan2\p\<nom_bibliothèque>\<version>\<fournisseur>
+#C:\Users\<YourUserName>\.conan2\p\<library_name>\<version>\<provider>
+$env:PATH = "C:\Users\<YourUserName>\.conan2\p\ccache;" + $env:PATH
+# Don't forget to replace <YourUserName> with your username or the username of windows use on the path if you have change after the install of Windows i.e.: you have for logging MyNewUsername and in Windows Explorer C:\Users\MyOldUsername is using so here use MyOldUsername
 
 
+# Open git bash
 # Conan v1 commands (we can't use them they are no logger support on Conan version 2!)
 conan profile update settings.arch=x86_64 x64-windows-static
 conan profile update settings.os=Windows x64-windows-static

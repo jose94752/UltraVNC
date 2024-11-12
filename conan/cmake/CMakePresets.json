@@ -30,7 +30,7 @@
                 "strategy": "external"
             },
             "toolchainFile": "conan_toolchain.cmake",
-            "binaryDir": "C:\\source\\objConan"
+            "binaryDir": "C:\\source\\UltraVNC\\conan\\cmake"
         }
     ],
     "buildPresets": [
