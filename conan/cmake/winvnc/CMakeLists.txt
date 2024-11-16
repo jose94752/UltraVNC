@@ -7,20 +7,20 @@ project(winvnc LANGUAGES C CXX RC)
 find_package(JPEG REQUIRED)
 find_package(libjpeg-turbo CONFIG REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(zstd CONFIG REQUIRED)
+find_package(zstd REQUIRED)
 find_package(LibLZMA REQUIRED)
-find_package(unofficial-sodium CONFIG REQUIRED)
+find_package(libsodium CONFIG REQUIRED)
   
 set(${PROJECT_NAME}_SOURCES
-    ../../../DSMPlugin/DSMPlugin.cpp
-    ../../../ZipUnZip32/ZipUnzip32.cpp
-    ../../../common/Clipboard.cpp
-    ../../../common/Hyperlinks.cpp
-    ../../../common/UltraVncZ.cpp
-    ../../../common/d3des.c
-    ../../../common/win32_helpers.cpp
-    ../../../lzo/minilzo.c
-    ../../../rfb/dh.cpp
+    ../../DSMPlugin/DSMPlugin.cpp
+    ../../ZipUnZip32/ZipUnzip32.cpp
+    ../../common/Clipboard.cpp
+    ../../common/Hyperlinks.cpp
+    ../../common/UltraVncZ.cpp
+    ../../common/d3des.c
+    ../../common/win32_helpers.cpp
+    ../../lzo/minilzo.c
+    ../../rfb/dh.cpp
     CloudDialog.cpp
     CpuUsage.cpp
     DeskdupEngine.cpp
@@ -93,22 +93,22 @@ set(${PROJECT_NAME}_SOURCES
 )
 add_executable(${PROJECT_NAME} WIN32)
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/..")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../common")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../omnithread")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../winvnc")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../common")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../omnithread")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../winvnc")
 foreach(file ${${PROJECT_NAME}_SOURCES})
-    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../winvnc/winvnc/${file}")
+    target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../winvnc/winvnc/${file}")
 endforeach(file)
-target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../winvnc/winvnc/winvnc.rc")
-set_source_files_properties(${CMAKE_SOURCE_DIR}/../winvnc/winvnc/winvnc.rc LANGUAGE RC)
+target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../winvnc/winvnc/winvnc.rc")
+set_source_files_properties(${CMAKE_SOURCE_DIR}/../../winvnc/winvnc/winvnc.rc LANGUAGE RC)
 target_compile_definitions(${PROJECT_NAME} PRIVATE NDEBUG __x86__ __WIN32__ WIN32 _WINDOWS XMD_H _WINSTATIC _RDPMODE _XZ _VCPKG)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE JPEG::JPEG
     PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static>
     PRIVATE ZLIB::ZLIB
-    PRIVATE zstd::libzstd
+    PRIVATE zstd::libzstd_static
     PRIVATE LibLZMA::LibLZMA
-	PRIVATE unofficial-sodium::sodium
+	PRIVATE libsodium::libsodium
     libomnithread
     librdr
     libudtcloud

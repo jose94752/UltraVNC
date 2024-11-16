@@ -7,21 +7,21 @@ project(vncviewer LANGUAGES C CXX RC)
 find_package(JPEG REQUIRED)
 find_package(libjpeg-turbo CONFIG REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(zstd CONFIG REQUIRED)
+find_package(zstd REQUIRED)
 find_package(LibLZMA REQUIRED)
 
 set(${PROJECT_NAME}_SOURCES
-    ../../DSMPlugin/DSMPlugin.cpp
-    ../../ZipUnZip32/ZipUnzip32.cpp
-    ../../common/Clipboard.cpp
-    ../../common/Hyperlinks.cpp
-    ../../common/UltraVncZ.cpp
-    ../../common/mnemonic.c
-    ../../common/mn_wordlist.c
-    ../../common/d3des.c
-    ../../common/win32_helpers.cpp
-    ../../lzo/minilzo.c
-    ../../rfb/dh.cpp
+    ../DSMPlugin/DSMPlugin.cpp
+    ../ZipUnZip32/ZipUnzip32.cpp
+    ../common/Clipboard.cpp
+    ../common/Hyperlinks.cpp
+    ../common/UltraVncZ.cpp
+    ../common/mnemonic.c
+    ../common/mn_wordlist.c
+    ../common/d3des.c
+    ../common/win32_helpers.cpp
+    ../lzo/minilzo.c
+    ../rfb/dh.cpp
     AboutBox.cpp
     AccelKeys.cpp
     AuthDialog.cpp
@@ -73,7 +73,7 @@ set(${PROJECT_NAME}_SOURCES
     zrle.cpp
 )
 add_executable(${PROJECT_NAME} WIN32)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../..")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/..")
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../omnithread")
 foreach(file ${${PROJECT_NAME}_SOURCES})
     target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/../../vncviewer/${file}")
@@ -85,7 +85,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE JPEG::JPEG
     PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static>
     PRIVATE ZLIB::ZLIB
-    PRIVATE zstd::libzstd
+    PRIVATE zstd::libzstd_static
     PRIVATE LibLZMA::LibLZMA
     libomnithread
     librdr

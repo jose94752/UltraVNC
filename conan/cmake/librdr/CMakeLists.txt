@@ -5,7 +5,7 @@ project(librdr LANGUAGES CXX RC)
 #conan_basic_setup() #<- Disable old Conan V1 command: " CMake Error at CMakeLists.txt:11 (conan_basic_setup): Unknown CMake command "conan_basic_setup". "
 
 find_package(ZLIB REQUIRED)
-find_package(zstd CONFIG REQUIRED)
+find_package(zstd REQUIRED)
 find_package(LibLZMA REQUIRED)
 
 set(${PROJECT_NAME}_SOURCES
@@ -27,6 +27,6 @@ foreach(file ${${PROJECT_NAME}_SOURCES})
 endforeach(file)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE ZLIB::ZLIB
-    PRIVATE zstd::libzstd
+    PRIVATE zstd::libzstd_static
     PRIVATE LibLZMA::LibLZMA
 )

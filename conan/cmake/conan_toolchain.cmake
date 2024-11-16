@@ -46,6 +46,13 @@ message(STATUS "Conan toolchain: Setting CMAKE_MSVC_RUNTIME_LIBRARY=$<$<CONFIG:R
 set(CMAKE_MSVC_RUNTIME_LIBRARY "$<$<CONFIG:Release>:MultiThreaded>$<$<CONFIG:RelWithDebInfo>:MultiThreadedDLL>")
 
 
+########## 'vs_debugger_environment' block #############
+# Definition of CMAKE_VS_DEBUGGER_ENVIRONMENT from "bindirs" folders of dependencies
+# for execution of applications with shared libraries within the VS IDE
+
+set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/libjp8b2d8563a9254/p/bin;C:/Users/jpluq/.conan2/p/b/libso81555a270f236/p/bin;C:/Users/jpluq/.conan2/p/b/xz_utdba6231a89a1e/p/bin;C:/Users/jpluq/.conan2/p/b/zlib0ee06ac456c91/p/bin;C:/Users/jpluq/.conan2/p/b/zstdebce0879719ca/p/bin>;%PATH%")
+
+
 ########## 'cppstd' block #############
 # Define the C++ and C standards from 'compiler.cppstd' and 'compiler.cstd'
 
@@ -150,6 +157,9 @@ list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 # The Conan local "generators" folder, where this toolchain is saved.
 list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR} )
 list(PREPEND CMAKE_PROGRAM_PATH "C:/Users/jpluq/.conan2/p/cmakefb3b433358da1/p/bin")
+list(PREPEND CMAKE_LIBRARY_PATH "C:/Users/jpluq/.conan2/p/b/libjp8b2d8563a9254/p/lib" "C:/Users/jpluq/.conan2/p/b/libso81555a270f236/p/lib" "C:/Users/jpluq/.conan2/p/b/xz_utdba6231a89a1e/p/lib" "C:/Users/jpluq/.conan2/p/b/zlib0ee06ac456c91/p/lib" "C:/Users/jpluq/.conan2/p/b/zstdebce0879719ca/p/lib")
+list(PREPEND CMAKE_INCLUDE_PATH "C:/Users/jpluq/.conan2/p/b/libjp8b2d8563a9254/p/include" "C:/Users/jpluq/.conan2/p/b/libso81555a270f236/p/include" "C:/Users/jpluq/.conan2/p/b/xz_utdba6231a89a1e/p/include" "C:/Users/jpluq/.conan2/p/b/zlib0ee06ac456c91/p/include" "C:/Users/jpluq/.conan2/p/b/zstdebce0879719ca/p/include")
+set(CONAN_RUNTIME_LIB_DIRS "$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/libjp8b2d8563a9254/p/bin>" "$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/libso81555a270f236/p/bin>" "$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/xz_utdba6231a89a1e/p/bin>" "$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/zlib0ee06ac456c91/p/bin>" "$<$<CONFIG:Release>:C:/Users/jpluq/.conan2/p/b/zstdebce0879719ca/p/bin>" )
 
 endif()
 

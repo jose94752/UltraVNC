@@ -1,4 +1,5 @@
 from conan import ConanFile
+from conan.tools.cmake import cmake_layout
 from conan.tools.files import save, load
 from conan.tools.gnu import AutotoolsToolchain, AutotoolsDeps
 from conan.tools.microsoft import unix_path, VCVars, is_msvc
@@ -10,12 +11,11 @@ class UltraVNC(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     
     def requirements(self):
-        pass
-        #self.requires("libjpeg-turbo/[~3.0.4]")
-        #self.requires("libsodium/[~cci.20220430]")
-        #self.requires("xz_utils/[~5.4.5]") # LibLZMA
-        #self.requires("zlib/[~1.3.1]")
-        #self.requires("zstd/[~1.4.9]")
+        self.requires("libjpeg-turbo/[~3.0.4]")
+        self.requires("libsodium/[~cci.20220430]")
+        self.requires("xz_utils/[~5.4.5]") # LibLZMA
+        self.requires("zlib/[~1.3.1]")
+        self.requires("zstd/[~1.4.9]")
         #self.requires("qt/[>=6.7 <6.8]") #sample line
 
     def build_requirements(self):
@@ -28,6 +28,7 @@ class UltraVNC(ConanFile):
 
     def layout(self):
         self.folders.generators = ""
+        cmake_layout(self)
     
     def source(self):
         pass
