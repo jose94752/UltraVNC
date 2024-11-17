@@ -134,6 +134,8 @@ conan search "zlib"
 # Install libraries commands
 conan install . -pr x64-windows-static --build zlib/1.3.1
 
+conan install . -pr x64-windows-static --build libsodium/cci.20220430
+
 # Call the install of libraries from conanfile.py files with the profile x64-windows-static
 conan install . -pr x64-windows-static
 
@@ -147,15 +149,20 @@ git clone https://github.com/ultravnc/UltraVNC.git
 # End Common Steps cmake invocation
 
 
-mkdir obj && cd obj
+# Steps specific using cmake, generate Visual Studio project files
+cd /d c:\source
+mkdir objConan && cd objConan
 # Previous with vcpkg (Which one use # x64 Native Tools Command Prompt for VS 2022)
 #cmake ^
 #    -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
 #    -DVCPKG_TARGET_TRIPLET=x64-windows-static ^
 #    ..\UltraVNC\cmake
 #set CL=/MP
-# Actual with Conan Not functional in the folder obj you must use these on the folder of Conan (cd /c/source/UltraVNC/conan/cmake/)
-cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" 
+# Actual with Conan Not functional in the folder objConan you must use these on the folder of Conan (cd /c/source/UltraVNC/conan/cmake/)
+#cmake -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" 
+
+#Patch CMake Warning ( with the path ../UltraVNC/conan/cmake )
+cmake ../UltraVNC/conan/cmake -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release
 
 cmake --build . --parallel --config=RelWithDebInfo
 
@@ -166,6 +173,7 @@ cmake --build . --parallel --config=RelWithDebInfo
 ######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, using ninja build system, and address sanitizer enabled
+# You need to install ClangCL generation tools if you have build failed
 
 # Open git bash
 
@@ -195,6 +203,7 @@ copy "%VCToolsInstallDir%\bin\Hostx64\x64\clang_rt.asan_dynamic-x86_64.dll" ultr
 ######################  Upgrade in progress for Conan Windows Visual Studio Users
 
 # Windows with cmake, using LLVM compiler
+# You need to install ClangCL generation tools if you have build failed
 
 # Open git bash
 
@@ -219,7 +228,10 @@ cmake --build . --parallel --config=RelWithDebInfo
 
 ######################  Upgrade in progress for Conan Windows Visual Studio Users adding previous changes not from Conan
 
-# Windows with regular Visual Studio project files
+# Windows with regular Visual Studio project files (with MFC components to avoid errors about missing afxres.h)
+#	If you have Visual Studio Build Tools 2019 with VSC 2022 (install on it MFC components too for same reason)
+#		Download and install Windows SDK Version 8.1 (for Errors MSB8036)
+#		From VS 2022 installer and install "MSVC v140 - VS 2015 C++ Build Tools (v14.00)" (for fatal error C1083: Unable to open include file : 'ctype.h')
 
 # Same steps before the cmake invocation as above (# Common Steps cmake invocation)
 
