@@ -23,8 +23,8 @@ libsodium:x64-windows
 
 # Use Git Bash for these commands below
 
-# Go to the directory /cmake/conan (Windows adapt for Linux and others)
-cd /c/source/UltraVNC/cmake/conan/
+# Go to the directory /conan/cmake (Windows adapt for Linux and others)
+cd /c/source/UltraVNC/conan/cmake/
 
 # First create the Conan default profile (if you just install Conan and you have not set these one)
 # Creating the Conan default profile
