@@ -128,6 +128,9 @@ openssl
 zlib
 zstd
 
+
+# Actual with Conan functional in the folder of Conan/Cmake (cd /c/source/UltraVNC/conan/cmake/ ) for the folder c/source/objConan below at section "# Steps specific using cmake, generate Visual Studio project files" but you must have already performed the commands below.
+# Beware the call name of packages are not exactly the same between vcpkg and conan (see https://conan.io/center to check) and modify the CMakeLists.txt and conanfile.py if needed.
 # Command for find packages of library example
 conan search "zlib"
 
@@ -135,6 +138,8 @@ conan search "zlib"
 conan install . -pr x64-windows-static --build zlib/1.3.1
 
 conan install . -pr x64-windows-static --build libsodium/cci.20220430
+
+conan install . -pr x64-windows-static --build zstd/1.5.6
 
 # Call the install of libraries from conanfile.py files with the profile x64-windows-static
 conan install . -pr x64-windows-static
@@ -164,9 +169,14 @@ mkdir objConan && cd objConan
 #Patch CMake Warning ( with the path ../UltraVNC/conan/cmake )
 cmake ../UltraVNC/conan/cmake -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release
 
-cmake --build . --parallel --config=RelWithDebInfo
+#Patch CMake Warning ( with the path binaries ) -> Try KO need configuration with profile and calling active.bat/desactive.bat for Windows from "Conan Package Manager for C++ in Practice - Jerry Wiltse" https://www.youtube.com/watch?v=fu-ayefRqWM (Very likely the Course of Jerry use Conan V1)
+#cmake ../UltraVNC/conan/cmake -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=%CD:\=/%
 
+# Previous build from vcpkg version
+#cmake --build . --parallel --config=RelWithDebInfo
 
+# Build with Conan version (from Jerry version)
+cmake --build . --config Release
 
 
 
