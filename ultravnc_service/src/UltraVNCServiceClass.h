@@ -94,7 +94,9 @@ private:
 	static void HandlePreconnect(int* sessionData, DWORD& OlddwSessionId);
 	static void HandleCADRequest();
 	static void LaunchCADProcess();
-	static bool MonitorSessions(BOOL RDPMODE, DWORD& dwSessionId, DWORD& OlddwSessionId);
+	static bool MonitorSessions(bool RDPMODE, DWORD& dwSessionId, DWORD& OlddwSessionId);
+	static bool MonitorAndLaunchRdpSession(PROCESS_INFORMATION& procInfo, DWORD& OlddwSessionId, bool& RDPMODE);
+	static bool MonitorConsoleSession(PROCESS_INFORMATION& procInfo, DWORD& OlddwSessionId, bool& RDPMODE);
 	static void TerminateProcessGracefully(HANDLE hProcess);
 	static DWORD GetActiveSessionId();
 
@@ -114,6 +116,7 @@ private:
 	static BOOL SetTBCPrivileges(VOID);
 	static void wait_for_existing_process();
 	static bool IsSessionStillActive(int ID);
+	static bool preconnect_start;
 
 
 public:
@@ -129,7 +132,7 @@ public:
 	static char service_name[256];
 	static char description[256];
 	static char display_name[256];
-	static char ultraVNC_Server_UI[256];
+	static char ultravnc_server_ui[256];
 	static bool IsServiceInstalled();
 	static bool IsServiceRunning();
 };
