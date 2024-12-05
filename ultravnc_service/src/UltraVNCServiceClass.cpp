@@ -34,10 +34,10 @@
 SERVICE_STATUS UltraVNCService::serviceStatus{};
 SERVICE_STATUS_HANDLE UltraVNCService::serviceStatusHandle = NULL;
 char UltraVNCService::service_path[MAX_PATH]{};
-char UltraVNCService::service_name[256] = "ultravnc_service";
-char UltraVNCService::display_name[256] = "UltraVNC Server Service";
-char UltraVNCService::description[256] = "UltraVNC Server Service enable remote connectivity to this machine using the VNC/RFB protocol.";
-char UltraVNCService::ultraVNC_Server_UI[256] = "\\winvnc.exe";
+char UltraVNCService::service_name[256] = "ultravnc_server";
+char UltraVNCService::display_name[256] = "UltraVNC Server";
+char UltraVNCService::description[256] = "UltraVNC Server enables remote connectivity to this machine using the VNC/RFB protocol.";
+char UltraVNCService::ultravnc_server_ui[256] = "\\winvnc.exe";
 char UltraVNCService::app_path[MAX_PATH]{};
 char UltraVNCService::app_path_UI[MAX_PATH]{};
 int UltraVNCService::kickrdp = 0;
@@ -48,6 +48,8 @@ HANDLE UltraVNCService::hEvent = NULL;
 int UltraVNCService::clear_console = 0;
 const char* UltraVNCService::app_name = "UltraVNC";
 char  UltraVNCService::cmdtext[256]{};
+IniFile myIniFile;
+bool UltraVNCService::preconnect_start = false;
 
 extern HINSTANCE g_hInstance;
 
@@ -85,7 +87,7 @@ void yesUVNCMessageBox(HWND m_hWnd, const char* body, const char* szHeader, int 
 };
 
 #pragma comment(lib, "Version.lib")
-char* GetVersionFromResource(char* version)
+wchar_t* GetVersionFromResource(wchar_t* version)
 {
 	HRSRC hResInfo;
 	DWORD dwSize;
@@ -122,7 +124,7 @@ char* GetVersionFromResource(char* version)
 							DWORD dwSecondRight = HIWORD(dwFileVersionLS);
 							DWORD dwRightMost = LOWORD(dwFileVersionLS);
 
-							sprintf_s(version, 128, " %d.%d.%d.%d", dwLeftMost, dwSecondLeft, dwSecondRight, dwRightMost);
+							swprintf_s(version, 128, L"%d.%d.%d.%d", dwLeftMost, dwSecondLeft, dwSecondRight, dwRightMost);
 						}
 					}
 
@@ -131,7 +133,7 @@ char* GetVersionFromResource(char* version)
 			}
 		}
 	}
-	strcat_s(version, 128, (char*)"-dev");
+	wcscat_s(version, 128, (wchar_t*)L"-dev");
 	return version;
 }
 
@@ -149,10 +151,12 @@ void updateButtons(HWND hwnd)
 	}
 
 	if (UltraVNCService::IsServiceInstalled() && UltraVNCService::IsServiceRunning()) {
+		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1001, FALSE);
 		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1002, TRUE);
 		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1003, FALSE);
 	}
 	else if (UltraVNCService::IsServiceInstalled() && !UltraVNCService::IsServiceRunning()) {
+		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1001, TRUE);
 		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1002, FALSE);
 		SendMessage(hwnd, TDM_ENABLE_BUTTON, 1003, TRUE);
 	}
@@ -162,21 +166,18 @@ int  StartUVNCMessageBox(HWND m_hWnd, const char* body, const char* szHeader, in
 {
 	wchar_t w_header[128];
 	wchar_t w_body[1024];
-	wchar_t w_footer[1024];
 	wchar_t w_version[128];
-	char version[128];
 	size_t outSize;
 
 	mbstowcs_s(&outSize, w_header, szHeader, strlen(szHeader) + 1);
 	mbstowcs_s(&outSize, w_body, body, strlen(body) + 1);
 
-	GetVersionFromResource(version);
-	mbstowcs_s(&outSize, w_version, version, strlen(version) + 1);
+	GetVersionFromResource(w_version);
 
 	HRESULT hr;
 	TASKDIALOGCONFIG tdc = { sizeof(TASKDIALOGCONFIG) };
 	int nClickedBtn = 0;
-	LPCWSTR szTitle = L"UltraVNC Server - Service";
+	LPCWSTR szTitle = L"UltraVNC Server Manager - Service";
 
 	TASKDIALOG_BUTTON aCustomButtons[] = {
 	   { 1000, L"Install"},
@@ -196,12 +197,11 @@ int  StartUVNCMessageBox(HWND m_hWnd, const char* body, const char* szHeader, in
 	tdc.pszMainIcon = MAKEINTRESOURCEW(IDI_ICON1);// TD_INFORMATION_ICON;
 	//tdc.pszMainInstruction = w_header;
 	tdc.pszContent = w_body;
-	/*wcscpy_s(w_footer, L"UltraVNC - Service -");
-	wcscat_s(w_footer, w_version);
-	wcscat_s(w_footer, L"\nCopyright © 2002 - 2024 UltraVNC Team Members ");
-	wcscat_s(w_footer, L" < a href = \"https://uvnc.com\">Website</a> | <a href=\"https://forum.uvnc.com\">Forum</a>");*/
-
-	tdc.pszFooter = L"UltraVNC Server - Service - 1.6.0-dev\nCopyright © 2002-2025 UltraVNC Team Members\n<a href=\"https://uvnc.com\">Website</a> | <a href=\"https://forum.uvnc.com\">Forum</a>";
+	wchar_t footer[4000]{};
+	wcscpy_s(footer, L"UltraVNC Server Manager - Service -");
+	wcscat_s(footer, w_version);
+	wcscat_s(footer, L"\nCopyright © 2002-2025 UltraVNC Team Members\n<a href=\"https://uvnc.com\">Website</a> | <a href=\"https://forum.uvnc.com\">Forum</a>");
+	tdc.pszFooter = footer;
 	tdc.pfCallback = [](HWND hwnd, UINT uNotification, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData) -> HRESULT {
 		static int elapsedTime = 0;
 		if (uNotification == TDN_TIMER) {
@@ -756,7 +756,7 @@ int UltraVNCService::createWinvncExeCall(bool preconnect, bool rdpselect)
 
 	// Replace the filename with the new one (e.g., "new_executable.exe")
 	strcpy_s(app_path_UI, MAX_PATH, exe_file_name); // Copy the path
-	strcat_s(app_path_UI, MAX_PATH, ultraVNC_Server_UI); // Add the new file name
+	strcat_s(app_path_UI, MAX_PATH, ultravnc_server_ui); // Add the new file name
 	if (preconnect)
 		strcat_s(app_path_UI, " -preconnect");
 	if (rdpselect)
@@ -782,8 +782,7 @@ int UltraVNCService::createWinvncExeCall(bool preconnect, bool rdpselect)
 }
 ////////////////////////////////////////////////////
 void UltraVNCService::monitorSessions() {
-	BOOL RDPMODE = false;
-	IniFile myIniFile;
+	BOOL RDPMODE = false;	
 	RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
 
 	hEvent = CreateEvent(NULL, FALSE, FALSE, "Global\\SessionEventUltra");
@@ -849,6 +848,11 @@ void UltraVNCService::monitorSessions() {
 		}
 	}
 
+	// terminate process
+	if (hEvent)
+		SetEvent(hEvent);
+	TerminateProcessGracefully(ProcessInfo.hProcess);
+	
 	// Cleanup resources
 	CleanupHandles({ hEvent, hEventcad, hEventPreConnect, hEndSessionEvent });
 	if (data) UnmapViewOfFile(data);
@@ -882,6 +886,7 @@ void UltraVNCService::HandlePreconnect(int* sessionData, DWORD& OlddwSessionId) 
 	if (dwSessionId != 0xFFFFFFFF) {
 		LaunchProcessWin(requestedSessionID, false, true);
 		OlddwSessionId = requestedSessionID;
+		preconnect_start = true;
 	}
 }
 ////////////////////////////////////////////////////
@@ -915,17 +920,119 @@ void UltraVNCService::LaunchCADProcess() {
 	}
 }
 ////////////////////////////////////////////////////
-// Helper function: Monitor Sessions
-bool UltraVNCService::MonitorSessions(BOOL RDPMODE, DWORD& dwSessionId, DWORD& OlddwSessionId) {
-	if (RDPMODE && IsAnyRDPSessionActive()) {
+bool IsSessionActive(DWORD sessionId) {
+	return sessionId != 0xFFFFFFFF;
+}
+void CloseProcessHandles(PROCESS_INFORMATION& procInfo) {
+	if (procInfo.hProcess) CloseHandle(procInfo.hProcess);
+	if (procInfo.hThread) CloseHandle(procInfo.hThread);
+	procInfo.hProcess = NULL;
+	procInfo.hThread = NULL;
+}
+
+bool UltraVNCService::MonitorConsoleSession(PROCESS_INFORMATION& procInfo, DWORD& OlddwSessionId, bool& RDPMODE) {
+	DWORD dwSessionId = WTSGetActiveConsoleSessionId();
+	if (OlddwSessionId != dwSessionId)
+		SetEvent(hEvent);
+	if (dwSessionId != 0xFFFFFFFF) {
+		DWORD dwCode = 0;
 		if (ProcessInfo.hProcess == NULL) {
+			LaunchProcessWin(dwSessionId, false, false);
+			OlddwSessionId = dwSessionId;
+		}
+		else if (GetExitCodeProcess(ProcessInfo.hProcess, &dwCode)) {
+			if (dwCode != STILL_ACTIVE) {
+
+				WaitForSingleObject(ProcessInfo.hProcess, 15000);
+				CloseProcessHandles(ProcessInfo);
+
+				int sessidcounter = 0;
+				while (dwSessionId == 0xFFFFFFFF && !IsShutdown) {
+					Sleep(1000);
+					dwSessionId = WTSGetActiveConsoleSessionId();
+					sessidcounter++;
+					if (sessidcounter > 10) break;
+				}
+				RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
+				return true;
+			}
+		}
+		else {
+			CloseProcessHandles(ProcessInfo);
+			int sessidcounter = 0;
+
+			while (dwSessionId == 0xFFFFFFFF && !IsShutdown) {
+				Sleep(1000);
+				dwSessionId = WTSGetActiveConsoleSessionId();
+				sessidcounter++;
+				if (sessidcounter > 10)
+					return false;
+			}
+
+			RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool UltraVNCService::MonitorAndLaunchRdpSession(PROCESS_INFORMATION& procInfo, DWORD& OlddwSessionId, bool& RDPMODE)
+{
+	if (ProcessInfo.hProcess == NULL) {
+		if (IsAnyRDPSessionActive()) {
 			LaunchProcessWin(0, true, false);
 			OlddwSessionId = 0;
+			preconnect_start = false;
+			return true;
 		}
-		else if (!IsSessionStillActive(OlddwSessionId)) {
-			SetEvent(hEvent);
+		else {
+			DWORD dwSessionId = 0xFFFFFFFF;
+			int sessidcounter = 0;
+			while (dwSessionId == 0xFFFFFFFF && !IsShutdown) {
+				dwSessionId = WTSGetActiveConsoleSessionId();
+				Sleep(1000);
+				sessidcounter++;
+				if (sessidcounter > 10) break;
+			}
+			LaunchProcessWin(dwSessionId, false, false);
+			OlddwSessionId = dwSessionId;
+			preconnect_start = false;
+			return true;
 		}
+	}
+
+	if (preconnect_start == true)
+		if (!IsSessionStillActive(OlddwSessionId)) SetEvent(hEvent);
+
+	// Monitor process
+	DWORD dwCode = 0;
+	bool returnvalue = GetExitCodeProcess(ProcessInfo.hProcess, &dwCode);
+	if (!returnvalue) {
+		//bad handle, thread already terminated
+		CloseProcessHandles(ProcessInfo);
+		RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
+		Sleep(1000);
 		return true;
+	}
+
+	if (dwCode == STILL_ACTIVE)
+		return true;
+
+	if (ProcessInfo.hProcess)
+		WaitForSingleObject(ProcessInfo.hProcess, 15000);
+	CloseProcessHandles(ProcessInfo);
+	RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
+	Sleep(1000);
+	return true;
+}
+
+// Helper function: Monitor Sessions
+bool UltraVNCService::MonitorSessions(bool RDPMODE, DWORD& dwSessionId, DWORD& OlddwSessionId) {
+	if (RDPMODE && IsAnyRDPSessionActive()) {
+		return MonitorAndLaunchRdpSession(ProcessInfo, OlddwSessionId, RDPMODE);
+	}
+	else {
+		return MonitorConsoleSession(ProcessInfo, OlddwSessionId, RDPMODE);
 	}
 
 	dwSessionId = GetActiveSessionId();
@@ -943,9 +1050,24 @@ void UltraVNCService::TerminateProcessGracefully(HANDLE hProcess) {
 	DWORD dwCode = STILL_ACTIVE;
 	while (dwCode == STILL_ACTIVE && !IsShutdown) {
 		GetExitCodeProcess(hProcess, &dwCode);
-		Sleep(1000);
+		if (dwCode != STILL_ACTIVE) {
+			// Wait for the process to close, with a timeout of 15 seconds
+			DWORD waitResult = WaitForSingleObject(ProcessInfo.hProcess, 15000);
+			// Clean up process and thread handles
+			if (ProcessInfo.hProcess) {
+				CloseHandle(ProcessInfo.hProcess);
+				ProcessInfo.hProcess = NULL; // Avoid using invalid handle
+			}
+			if (ProcessInfo.hThread) {
+				CloseHandle(ProcessInfo.hThread);
+				ProcessInfo.hThread = NULL;
+			}
+		}
+		else {
+			// Process is still active; sleep for 1 second
+			Sleep(1000);
+		}
 	}
-	if (hProcess) CloseHandle(hProcess);
 }
 ////////////////////////////////////////////////////
 // Helper function: Get Active Session ID
