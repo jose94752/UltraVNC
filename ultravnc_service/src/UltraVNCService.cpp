@@ -47,7 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,      // Handle to the current instance
 
         argfound = TRUE;
         if (strncmp(&cmdLineBuffer[i], "-install", strlen("-install")) == 0) {
-            UltraVNCService::install_service();
+            UltraVNCService::install_service(true);
             return 0; // Exit after handling the argument
         }
         if (strncmp(&cmdLineBuffer[i], "-uninstall", strlen("-uninstall")) == 0) {

@@ -177,7 +177,12 @@ int  StartUVNCMessageBox(HWND m_hWnd, const char* body, const char* szHeader, in
 	HRESULT hr;
 	TASKDIALOGCONFIG tdc = { sizeof(TASKDIALOGCONFIG) };
 	int nClickedBtn = 0;
-	LPCWSTR szTitle = L"UltraVNC Server Manager - Service";
+	wchar_t szTitle[2048] = L"UltraVNC Server -";
+#ifdef _X64
+	wcscat_s(szTitle, L" 64-bit - Service Manager");
+#else
+	wcscat_s(szTitle, L" 32-bit - Service Manager");
+#endif
 
 	TASKDIALOG_BUTTON aCustomButtons[] = {
 	   { 1000, L"Install"},
@@ -198,7 +203,7 @@ int  StartUVNCMessageBox(HWND m_hWnd, const char* body, const char* szHeader, in
 	//tdc.pszMainInstruction = w_header;
 	tdc.pszContent = w_body;
 	wchar_t footer[4000]{};
-	wcscpy_s(footer, L"UltraVNC Server Manager - Service -");
+	wcscpy_s(footer, L"UltraVNC Server - Service Manager -");
 	wcscat_s(footer, w_version);
 	wcscat_s(footer, L"\nCopyright © 2002-2025 UltraVNC Team Members\n<a href=\"https://uvnc.com\">Website</a> | <a href=\"https://forum.uvnc.com\">Forum</a>");
 	tdc.pszFooter = footer;
@@ -422,7 +427,7 @@ void UltraVNCService::set_service_description() {
 }
 ////////////////////////////////////////////////////////////////////////////////
 #define VNCDEPENDENCIES    "Tcpip\0EventLog\0\0"  // Example of dependencies
-int UltraVNCService::install_service(void) {
+int UltraVNCService::install_service(bool show) {
 	SC_HANDLE scm, service;
 	// Assuming 'pad()' function is some sort of padding, call it if needed
 	pad();
@@ -458,9 +463,11 @@ int UltraVNCService::install_service(void) {
 		return 1;
 	}
 	else {
-		char Msg[256];
-		snprintf(Msg, sizeof(Msg), "%s was correct installed", display_name);
-		yesUVNCMessageBox(NULL, Msg, app_name, MB_ICONERROR);
+		if (show) {
+			char Msg[256];
+			snprintf(Msg, sizeof(Msg), "%s was correct installed", display_name);
+			yesUVNCMessageBox(NULL, Msg, app_name, MB_ICONERROR);
+		}
 		// Set service description if creation succeeded
 		set_service_description();
 	}

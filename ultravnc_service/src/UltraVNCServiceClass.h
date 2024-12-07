@@ -122,7 +122,7 @@ private:
 public:
 	UltraVNCService();
 	static int start_service(char* cmd);
-	static int install_service(void);
+	static int install_service(bool show = false);
 	static int uninstall_service(void);
 
 	static BOOL DeleteServiceSafeBootKey();
