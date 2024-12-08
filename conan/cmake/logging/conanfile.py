@@ -9,7 +9,7 @@ class logging(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps"
     settings = "os", "compiler", "build_type", "arch"
     
-     def requirements(self):
+    def requirements(self):
         pass
         #self.requires("libjpeg-turbo/[~3.0.4]")
         #self.requires("libsodium/[~cci.20220430]")
