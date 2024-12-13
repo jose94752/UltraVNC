@@ -86,3 +86,13 @@ conan install . -pr x86-windows-static
 
 # Run Conan to install the dependencies (last command)
 conan install . --build=missing
+
+# Note if you need to update a library with Conan after you have update the conanfile.py and the CMake files
+# Update the conan.lock with the command like these one (modify for the cmake subfolders)
+# For root of conan/cmake
+conan install ../UltraVNC/conan/cmake --lockfile=C:/source/UltraVNC/conan/cmake/conan.lock --build=missing
+# For cmake/vncviewer (other example)
+conan install ../UltraVNC/conan/cmake/vncviewer --lockfile=C:/source/UltraVNC/conan/cmake/vncviewer/conan.lock --build=missing
+
+# These commands works from folders like c:\source\objConan or c:\source\UltraVNC
+

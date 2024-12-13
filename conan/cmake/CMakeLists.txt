@@ -16,6 +16,10 @@ cmake_policy(POP)
 #    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 #endif()
 
+# Patch Could not find a package configuration file provided by "libjpeg-turbo"
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+# End Patch Could not find a package configuration file provided by "libjpeg-turbo"
+
 if (MINGW)
     set(CMAKE_C_FLAGS "-Wno-write-strings")
     set(CMAKE_CXX_FLAGS "-Wno-write-strings -Wno-conversion-null")
