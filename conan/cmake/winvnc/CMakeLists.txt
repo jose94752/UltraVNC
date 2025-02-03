@@ -42,7 +42,6 @@ set(${PROJECT_NAME}_SOURCES
     cadthread.cpp
     credentials.cpp
     getinfo.cpp
-    inifile.cpp
     initipp.cpp
     rfbRegion_X11.cxx
     rfbRegion_win32.cpp
