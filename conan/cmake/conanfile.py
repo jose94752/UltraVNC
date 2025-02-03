@@ -11,7 +11,7 @@ class UltraVNC(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     
     def requirements(self):
-        self.requires("libjpeg-turbo/[~3.0.4]")
+        self.requires("libjpeg-turbo/[~3.1.0]")
         self.requires("libsodium/[~cci.20220430]")
         self.requires("xz_utils/[~5.4.5]") # LibLZMA
         self.requires("zlib/[~1.3.1]")
@@ -38,25 +38,3 @@ class UltraVNC(ConanFile):
         #tc = CMakeToolchain(self)
         #tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0091"] = "NEW"
         #tc.generate()
-
-# Original from the conanfile.txt
-## Section for required dependencies
-#[requires]
-##libjpeg-turbo/3.0.4
-##libsodium/cci.20220430
-##xz_utils/5.4.5 # LibLZMA
-##zlib/1.3.1
-##zstd/1.4.9
-#
-## Section for generators, here CMake to facilitate integration with CMake
-#[generators]
-#CMakeDeps
-#CMakeToolchain
-#
-#[layout]
-#cmake_layout
-#
-## Options section (optional) for customizing package configuration
-#[options]
-## For example, deactivate the shared option to obtain static libraries
-##zlib:shared=False

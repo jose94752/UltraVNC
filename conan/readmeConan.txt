@@ -141,7 +141,7 @@ conan install . -pr x64-windows-static --build libsodium/cci.20220430
 
 conan install . -pr x64-windows-static --build zstd/1.5.6
 
-conan install . -pr x64-windows-static --build libjpeg-turbo/3.0.4
+conan install . -pr x64-windows-static --build libjpeg-turbo/3.1.0
 
 # Call the install of libraries from conanfile.py files with the profile x64-windows-static
 conan install . -pr x64-windows-static

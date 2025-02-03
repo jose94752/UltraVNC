@@ -52,7 +52,7 @@ conan profile update options.*:shared=False x86-windows  # Ensures static librar
 *:shared=False
 [conf]
 
-# Set zlib in the conanfile.txt files need it
+# Set zlib in the conanfile.txt files need it <- obsolete we use conanfile.py
 
 # Install with x86-windows profile
 conan install . -pr x86-windows

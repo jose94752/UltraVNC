@@ -11,7 +11,7 @@ class createpassword(ConanFile):
     
     def requirements(self):
         pass
-        #self.requires("libjpeg-turbo/[~3.0.4]")
+        #self.requires("libjpeg-turbo/[~3.1.0]")
         #self.requires("libsodium/[~cci.20220430]")
         #self.requires("xz_utils/[~5.4.5]") # LibLZMA
         #self.requires("zlib/[~1.3.1]")

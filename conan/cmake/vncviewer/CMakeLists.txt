@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(JPEG REQUIRED)
 #find_package(libjpeg-turbo CONFIG REQUIRED) 	# Patch Could not find a package configuration file provided by "libjpeg-turbo"
-find_package(LibjpegTurbo REQUIRED)				#
+find_package(libjpeg-turbo REQUIRED)			# Updated 2025-01-29 18:25 UMT+1
 find_package(ZLIB REQUIRED)
 find_package(zstd REQUIRED)
 find_package(LibLZMA REQUIRED)
@@ -88,7 +88,8 @@ set_source_files_properties(${CMAKE_SOURCE_DIR}/../../vncviewer/res/vncviewer.rc
 target_compile_definitions(${PROJECT_NAME} PRIVATE NDEBUG WIN32 _WINDOWS __NT__ _WINSTATIC __WIN32__ _VIEWER _XZ _CLOUD _VCPKG NOMINMAX)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE JPEG::JPEG
-    PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static>
+    #PRIVATE $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static> 	# Patched Updated 2025-01-29 18:51 UMT+1 -> target_link_libraries(YOUR_TARGET libjpeg-turbo::libjpeg-turbo)
+	PRIVATE libjpeg-turbo::libjpeg-turbo
     PRIVATE ZLIB::ZLIB
     PRIVATE zstd::libzstd_static
     PRIVATE LibLZMA::LibLZMA
