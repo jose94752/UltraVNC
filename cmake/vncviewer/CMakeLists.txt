@@ -90,7 +90,7 @@ if (CMAKE_CXX_STANDARD STREQUAL 14)
 		PRIVATE LibLZMA::LibLZMA
 		libomnithread
 		librdr
-		libudtcloud
+		#libudtcloud	 #Patch deleting libudtcloud from project
 		libzip32
 		libzipunzip
 		comctl32
@@ -145,3 +145,4 @@ elseif (CMAKE_CXX_STANDARD STREQUAL 17)
 	
 # End CuteVncViewer
 endif()
+
