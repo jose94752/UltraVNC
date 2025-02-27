@@ -39,8 +39,6 @@ set(${PROJECT_NAME}_SOURCES
     cadthread.cpp
     credentials.cpp
     getinfo.cpp
-    inifile.cpp
-    initipp.cpp
     rfbRegion_X11.cxx
     rfbRegion_win32.cpp
     rfbUpdateTracker.cpp
@@ -108,7 +106,7 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE unofficial-sodium::sodium
     libomnithread
     librdr
-    libudtcloud
+    libudtcloud	 #Patch Needed the deleting libudtcloud from project not implement here because of avalanche of LNK Errors.
     libzip32
     libzipunzip
     comctl32
