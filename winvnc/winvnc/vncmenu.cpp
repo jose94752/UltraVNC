@@ -76,6 +76,7 @@ void Open_homepage();
 void Open_forum();
 void Open_github();
 void Open_mastodon();
+void Open_bluesky();
 void Open_facebook();
 void Open_xtwitter();
 void Open_reddit();
@@ -85,6 +86,7 @@ void Open_openhub();
 extern char dnsname[255];
 
 HMENU vncMenu::m_hmenu = NULL;
+char vncMenu::exe_file_name[MAX_PATH]="";
 
 BOOL pfnDwmEnableCompositiond = FALSE;
 static inline VOID DisableAero(VOID)
@@ -172,7 +174,8 @@ static void RestoreFontSmoothing()
 // Implementation
 
 vncMenu::vncMenu(vncServer* server)
-{
+{	
+	GetModuleFileName(0, exe_file_name, MAX_PATH);
 	vnclog.Print(LL_INTERR, VNCLOG("vncmenu(server)\n"));
 	ports_set = false;
 	CoInitialize(0);
@@ -297,6 +300,7 @@ vncMenu::vncMenu(vncServer* server)
 	// Install the Tray icon!
 	AddTrayIcon();
 	CoUninitialize();
+
 }
 
 vncMenu::~vncMenu()
@@ -765,8 +769,6 @@ bool vncMenu::OpenWebpageFromApp(int iMsg)
 		return false;
 
 	char dir[MAX_PATH];
-	char exe_file_name[MAX_PATH];
-	GetModuleFileName(0, exe_file_name, MAX_PATH);
 	strcpy_s(dir, exe_file_name);
 	if (iMsg == ID_VISITUSONLINE_HOMEPAGE)
 		strcat_s(dir, " -openhomepage");
@@ -776,6 +778,8 @@ bool vncMenu::OpenWebpageFromApp(int iMsg)
 		strcat_s(dir, " -opengithub");
 	if (iMsg == ID_VISITUSONLINE_MASTODON)
 		strcat_s(dir, " -openmastodon");
+	if (iMsg == ID_VISITUSONLINE_BLUESKY)
+		strcat_s(dir, " -openbluesky");
 	if (iMsg == ID_VISITUSONLINE_FACEBOOK)
 		strcat_s(dir, " -openfacebook");
 	if (iMsg == ID_VISITUSONLINE_XTWITTER)
@@ -930,7 +934,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 		break;
 
 		case ID_KILLCLIENTS: {
-			if (!MessageBoxSecure(NULL, "Do you want to kill all connected viewers", "", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to kill all connected Viewers?", "", MB_YESNO))
 				return 0;
 			// Disconnect all currently connected clients
 			vnclog.Print(LL_INTINFO, VNCLOG("KillAuthClients() ID_KILLCLIENTS \n"));
@@ -972,6 +976,12 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				OpenWebpageFromApp(ID_VISITUSONLINE_MASTODON);
 			break;
 
+		case ID_VISITUSONLINE_BLUESKY:
+			if (settings->RunningFromExternalService() && OpenWebpageFromService("cmd /c start https://bsky.app/profile/ultravnc.bsky.social"));
+			else
+				OpenWebpageFromApp(ID_VISITUSONLINE_BLUESKY);
+			break;
+
 		case ID_VISITUSONLINE_FACEBOOK:
 			if (settings->RunningFromExternalService() && OpenWebpageFromService("cmd /c start https://www.facebook.com/ultravnc1"));
 			else
@@ -979,7 +989,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			break;
 
 		case ID_VISITUSONLINE_XTWITTER:
-			if (settings->RunningFromExternalService() && OpenWebpageFromService("cmd /c start https://twitter.com/ultravnc1"));
+			if (settings->RunningFromExternalService() && OpenWebpageFromService("cmd /c start https://x.com/ultravnc1"));
 			else
 				OpenWebpageFromApp(ID_VISITUSONLINE_XTWITTER);
 			break;
@@ -999,12 +1009,12 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 		case ID_CLOSE: {
 			if (settings->RunningFromExternalService()) {
-				if (!MessageBoxSecure(NULL, "Do you want to restart the UltraVNC Server", "", MB_YESNO))
+				if (!MessageBoxSecure(NULL, "Do you want to restart the UltraVNC Server?", "", MB_YESNO))
 					return 0;
 			}
 #ifndef SC_20
 			else {
-				if (!MessageBoxSecure(NULL, "Do you want to close  the UltraVNC Server", "", MB_YESNO))
+				if (!MessageBoxSecure(NULL, "Do you want to close the UltraVNC Server?", "", MB_YESNO))
 					return 0;
 			}
 #endif
@@ -1019,7 +1029,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 #ifndef SC_20
 		case ID_REBOOTSAFEMODE:
 		{
-			if (!MessageBoxSecure(NULL, "Do you want to reboot the System", "System", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to reboot the System?", "System", MB_YESNO))
 				return 0;
 			HANDLE hPToken = DesktopUsersToken::getInstance()->getDesktopUsersToken();
 			if (!hPToken) {
@@ -1027,9 +1037,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				break;
 			}
 
-			char dir[MAX_PATH];
-			char exe_file_name[MAX_PATH];
-			GetModuleFileName(0, exe_file_name, MAX_PATH);
+			char dir[MAX_PATH];			
 			strcpy_s(dir, exe_file_name);
 			strcat_s(dir, " -rebootsafemodehelper");
 
@@ -1054,7 +1062,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 		case ID_REBOOT_FORCE:
 		{
-			if (!MessageBoxSecure(NULL, "Do you want to force reboot the System", "System", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to force reboot the System?", "System", MB_YESNO))
 				return 0;
 			HANDLE hPToken = DesktopUsersToken::getInstance()->getDesktopUsersToken();
 			if (!hPToken) {
@@ -1063,8 +1071,6 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			}
 
 			char dir[MAX_PATH];
-			char exe_file_name[MAX_PATH];
-			GetModuleFileName(0, exe_file_name, MAX_PATH);
 			strcpy_s(dir, exe_file_name);
 			strcat_s(dir, " -rebootforcedehelper");
 
@@ -1090,7 +1096,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 		case ID_UNINSTALL_SERVICE:
 		{
-			if (!MessageBoxSecure(NULL, "Do you want to uninstall the UltraVNC service.", "Service", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to uninstall the UltraVNC service?", "Service", MB_YESNO))
 				return 0;
 			HWND hwnd = postHelper::FindWinVNCWindow(true);
 			if (hwnd) SendMessage(hwnd, WM_COMMAND, ID_CLOSE, 0);
@@ -1100,8 +1106,6 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				break;
 			}
 			char dir[MAX_PATH];
-			char exe_file_name[MAX_PATH];
-			GetModuleFileName(0, exe_file_name, MAX_PATH);
 			strcpy_s(dir, exe_file_name);
 			strcat_s(dir, " -uninstallhelper");
 
@@ -1126,7 +1130,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 		case ID_RUNASSERVICE:
 		{
-			if (!MessageBoxSecure(NULL, "Do you want to install UltraVNC as service", "Service", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to install UltraVNC as service?", "Service", MB_YESNO))
 				return 0;
 			DWORD errorcode = 0;
 			HANDLE hPToken = DesktopUsersToken::getInstance()->getDesktopUsersToken();
@@ -1134,8 +1138,6 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				goto error6;
 
 			char dir[MAX_PATH];
-			char exe_file_name[MAX_PATH];
-			GetModuleFileName(0, exe_file_name, MAX_PATH);
 			strcpy_s(dir, exe_file_name);
 			strcat_s(dir, " -installhelper");
 
@@ -1177,7 +1179,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			DWORD id = processHelper::GetExplorerLogonPid();
 			if (id != 0)
 			{
-				if (!MessageBoxSecure(NULL, "Do you want to stop the UltravNC service.", "Service", MB_YESNO))
+				if (!MessageBoxSecure(NULL, "Do you want to stop the UltravNC service?", "Service", MB_YESNO))
 					return 0;
 				DWORD errorcode = 0;
 				STARTUPINFO          StartUPInfo;
@@ -1198,8 +1200,6 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				}
 
 				char dir[MAX_PATH];
-				char exe_file_name[MAX_PATH];
-				GetModuleFileName(0, exe_file_name, MAX_PATH);
 				strcpy_s(dir, exe_file_name);
 				strcat_s(dir, " -stopservicehelper");
 
@@ -1223,7 +1223,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 		break;
 		case ID_START_SERVICE:
 		{
-			if (!MessageBoxSecure(NULL, "Do you want to start the UltraVNC service.", "Service", MB_YESNO))
+			if (!MessageBoxSecure(NULL, "Do you want to start the UltraVNC service?", "Service", MB_YESNO))
 				return 0;
 			HANDLE hProcess{}, hPToken{};
 			const DWORD id = processHelper::GetExplorerLogonPid();
@@ -1255,8 +1255,6 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				}
 
 				char dir[MAX_PATH];
-				char exe_file_name[MAX_PATH];
-				GetModuleFileName(0, exe_file_name, MAX_PATH);
 				strcpy_s(dir, exe_file_name);
 				strcat_s(dir, " -startservicehelper");
 
