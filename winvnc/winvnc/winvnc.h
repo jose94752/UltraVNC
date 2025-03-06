@@ -48,8 +48,9 @@
 extern HINSTANCE	hAppInstance;
 extern const char	*szAppName;
 extern DWORD		mainthreadId;
+extern char winvncFolder[MAX_PATH];
 
-// Main VNC server routine
+// Main UltraVNC Server routine
 
 extern int WinVNCAppMain();
 
@@ -68,6 +69,7 @@ const char winvncSCexit[]	= "-sc_exit";
 const char winvncSCprompt[]	= "-sc_prompt";
 const char winvncmulti[]	= "-multi";
 const char winvnchttp[]	= "-httpproxy";
+const char winvncsettings[] = "-settings";
 
 //adzm 2009-06-20
 // for use with -sc
@@ -95,6 +97,7 @@ const char winvncopenhomepage[]				= "-openhomepage";
 const char winvncopenforum[]				= "-openforum";
 const char winvncopengithub[]				= "-opengithub";
 const char winvncopenmastodon[]				= "-openmastodon";
+const char winvncopenbluesky[]				= "-openbluesky";
 const char winvncopenfacebook[]				= "-openfacebook";
 const char winvncopenxtwitter[]				= "-openxtwitter";
 const char winvncopenreddit[]				= "-openreddit";

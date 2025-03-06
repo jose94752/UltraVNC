@@ -85,6 +85,7 @@
 #include<map>
 #include "SettingsManager.h"
 #include "credentials.h"
+#include "winvnc.h"
 using namespace std;
 
 #pragma comment(lib, "mpr.lib") //for getting full mapped drive
@@ -1024,12 +1025,8 @@ void vncClientThread::LogAuthResult(bool success, bool isconnected)
 		typedef BOOL(*LogeventFn)(char* machine);
 		LogeventFn Logevent = 0;
 		char szCurrentDir[MAX_PATH];
-		if (GetModuleFileName(NULL, szCurrentDir, MAX_PATH))
-		{
-			char* p = strrchr(szCurrentDir, '\\');
-			*p = '\0';
-			strcat_s(szCurrentDir, "\\logging.dll");
-		}
+		strcpy_s(szCurrentDir, winvncFolder);
+		strcat_s(szCurrentDir, "\\logging.dll");
 		HMODULE hModule = LoadLibrary(szCurrentDir);
 		if (hModule)
 		{
@@ -1043,12 +1040,8 @@ void vncClientThread::LogAuthResult(bool success, bool isconnected)
 		typedef BOOL(*LogeventFn)(char* machine, int clientId, bool isinteractive);
 		LogeventFn Logevent = 0;
 		char szCurrentDir[MAX_PATH];
-		if (GetModuleFileName(NULL, szCurrentDir, MAX_PATH))
-		{
-			char* p = strrchr(szCurrentDir, '\\');
-			*p = '\0';
-			strcat_s(szCurrentDir, "\\logging.dll");
-		}
+		strcpy_s(szCurrentDir, winvncFolder);
+		strcat_s(szCurrentDir, "\\logging.dll");
 		HMODULE hModule = LoadLibrary(szCurrentDir);
 		if (hModule)
 		{
@@ -1141,12 +1134,8 @@ vncClientThread::InitAuthenticate()
 		typedef BOOL(*LogeventFn)(char* info);
 		LogeventFn Logevent = NULL;
 		char szCurrentDir[MAX_PATH];
-		if (GetModuleFileName(NULL, szCurrentDir, MAX_PATH))
-		{
-			char* p = strrchr(szCurrentDir, '\\');
-			*p = '\0';
-			strcat_s(szCurrentDir, "\\logging.dll");
-		}
+		strcpy_s(szCurrentDir, winvncFolder);
+		strcat_s(szCurrentDir, "\\logging.dll");
 		HMODULE hModule = LoadLibrary(szCurrentDir);
 		if (hModule)
 		{
@@ -4094,7 +4083,7 @@ vncClientThread::run(void* arg)
 							// We replace the "\" char following the drive letter and ":"
 							// with a char corresponding to the type of drive
 							// We obtain something like "C:l<NULL>D:c<NULL>....Z:n\<NULL><NULL>"
-							// Isn't it ugly ?
+							// Isn't it ugly?
 							nType = GetDriveType(szDrive);
 							switch (nType)
 							{
@@ -4141,7 +4130,7 @@ vncClientThread::run(void* arg)
 						// moved jdp 8/5/08 -- have to read whole packet to keep protocol in sync
 						if (!settings->getEnableFileTransfer() || !fUserOk) break;
 						// sf@2004 - Shortcuts Case
-						// Todo: Cultures translation ?
+						// Todo: Cultures translation?
 						int nFolder = -1;
 						char szP[MAX_PATH + 2];
 						bool fShortError = false;
@@ -4475,12 +4464,8 @@ vncClientThread::run(void* arg)
 	typedef BOOL(*LogeventFn)(char* machine, char* user, int clientId, bool isinteractive);
 	LogeventFn Logevent = 0;
 	char szCurrentDir[MAX_PATH];
-	if (GetModuleFileName(NULL, szCurrentDir, MAX_PATH))
-	{
-		char* p = strrchr(szCurrentDir, '\\');
-		*p = '\0';
-		strcat_s(szCurrentDir, "\\logging.dll");
-	}
+	strcpy_s(szCurrentDir, winvncFolder);
+	strcat_s(szCurrentDir, "\\logging.dll");
 	HMODULE hModule = LoadLibrary(szCurrentDir);
 	if (hModule)
 	{
@@ -6061,7 +6046,7 @@ void vncClient::FinishFileReception()
 	// sf@2004 - Delta transfer
 	SetEndOfFile(m_hDestFile);
 
-	// if error ?
+	// if error?
 	FlushFileBuffers(m_hDestFile);
 
 	// Set the DestFile Time Stamp
@@ -6565,7 +6550,7 @@ bool vncClient::DoFTUserImpersonation()
 void vncClient::UndoFTUserImpersonation()
 {
 	//vnclog.Print(LL_INTERR, VNCLOG("%%%%%%%%%%%%% vncClient::UNDoFTUserImpersonation - Call\n"));
-	//moved to after returns, Is this lock realy needed if no revert is done ?
+	//moved to after returns, Is this lock realy needed if no revert is done?
 	//
 	//omni_mutex_lock l(GetUpdateLock());
 

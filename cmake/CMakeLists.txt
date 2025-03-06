@@ -135,8 +135,6 @@ add_subdirectory(ldapauth9x)
 add_subdirectory(ldapauthnt4)
 add_subdirectory(libomnithread)
 add_subdirectory(librdr)
-#add_subdirectory(libudt4) # udt4 Deleted sources files
-#add_subdirectory(libudtcloud) # UdtCloublid Deleted sources files
 add_subdirectory(libzip32)
 add_subdirectory(libzipunzip)
 add_subdirectory(logging)
